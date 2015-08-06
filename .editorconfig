@@ -9,3 +9,6 @@ indent_size=2
 
 [**.cc]
 indent_size=4
+
+[**.h]
+indent_size=4
