@@ -1,0 +1,6 @@
+name: oracle
+version: 0.1.0
+dependencies:
+  grinder: any
+  logging: any
+  test: any
