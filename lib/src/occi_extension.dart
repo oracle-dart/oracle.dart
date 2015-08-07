@@ -216,4 +216,16 @@ class Clob {
   int write(int amount, List<int> buffer, int offset) native 'OracleClob_write';
 }
 
-class Metadata {}
+class _Metadata {
+  bool getBoolean(int attrId) native 'OracleMetadata_getBoolean';
+  
+  int getInt(int attrId) native 'OracleMetadata_getInt';
+  
+  num getNumber(int attrId) native 'OracleMetadata_getNumber';
+  
+  String getString(int attrId) native 'OracleMetadata_getString';
+  
+  DateTime getTimestamp(int attrId) native 'OracleMetadata_getTimestamp';
+  
+  int getUInt(int attrId) native 'OracleMetadata_getUInt';
+}

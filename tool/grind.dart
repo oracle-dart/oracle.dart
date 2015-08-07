@@ -13,6 +13,7 @@ final cFiles = [
   'environment',
   'blob',
   'clob',
+  'metadata',
 ];
 
 @DefaultTask()
