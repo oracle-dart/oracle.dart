@@ -1,3 +1,6 @@
+// Copyright 2015, Austin Cummings, Chris Lucas, Michael Loveridge
+// This file is part of oracle.dart, and is released under LGPL v3.
+
 #include "metadata.h"
 
 #include <occi.h>

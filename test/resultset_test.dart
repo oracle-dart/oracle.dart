@@ -118,7 +118,13 @@ main() {
     test('getColumnListMetadata', () {
       var f = () => con.executeQuery('SELECT test_int, test_string FROM resultset_test').getColumnListMetadata();
       expect(f, returnsNormally);
-      expect(f().length, equals(2));
+
+      var metadataList = f();
+      expect(metadataList.length, equals(2));
+
+      for (var md in metadataList) {
+        expect(md is oracle.ColumnMetadata, isTrue);
+      }
     });
   });
 }
