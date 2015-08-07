@@ -1,5 +1,15 @@
 #include "metadata.h"
 
+#include <occi.h>
+
+namespace occi = oracle::occi;
+
+void OracleMetadata_Finalizer(void * isolate_callback_data,
+                              Dart_WeakPersistentHandle handle,
+                              void* peer) {
+    delete (occi::MetaData *)peer;
+}
+
 void OracleMetadata_getBoolean(Dart_NativeArguments arguments) {
     Dart_PropagateError(Dart_NewUnhandledExceptionError(
         Dart_NewStringFromCString("Not implemented")));

@@ -114,5 +114,11 @@ main() {
       expect(() => queryAll().getDouble(1), returnsNormally);
       expect(queryAll().getDouble(1), isNull);
     });
+
+    test('getColumnListMetadata', () {
+      var f = () => con.executeQuery('SELECT test_int, test_string FROM resultset_test').getColumnListMetadata();
+      expect(f, returnsNormally);
+      expect(f().length, equals(2));
+    });
   });
 }

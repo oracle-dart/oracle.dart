@@ -131,7 +131,8 @@ class Statement {
 class ResultSet {
   ResultSet._();
 
-  dynamic getColumnListMetadata() native 'OracleResultSet_getColumnListMetadata';
+  List<ColumnMetadata> getColumnListMetadata()
+    native 'OracleResultSet_getColumnListMetadata';
 
   dynamic cancel() native 'OracleResultSet_cancel';
 
@@ -228,4 +229,8 @@ class _Metadata {
   DateTime getTimestamp(int attrId) native 'OracleMetadata_getTimestamp';
   
   int getUInt(int attrId) native 'OracleMetadata_getUInt';
+}
+
+class ColumnMetadata extends _Metadata {
+  ColumnMetadata._();
 }

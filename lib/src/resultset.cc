@@ -3,6 +3,7 @@
 
 #include "resultset.h"
 
+#include "metadata.h"
 #include "lob.h"
 #include "helpers.h"
 #include <occi.h>
@@ -22,16 +23,33 @@ void OracleResultSet_Finalizer(void * isolate_callback_data,
 }
 
 void OracleResultSet_getColumnListMetadata(Dart_NativeArguments args) {
-    /*Dart_EnterScope();
+    Dart_EnterScope();
 
     auto rs = getThis<occi::ResultSet>(args);
-    std::vector<occi::MetaData> mdvec = rs->getColumnListMetaData();
+    std::vector<occi::MetaData> data;
 
-    //Dart_Handle dh = HandleError(Dart_NewStringFromCString(s.c_str()));
+    try {
+        data = rs->getColumnListMetaData();
+    } CATCH_SQL_EXCEPTION
+        
+    Dart_Handle list = Dart_NewList(data.size());
 
-    Dart_SetReturnValue(args, dh);
+    for (unsigned int i = 0; i < data.size(); i++) {
+        occi::MetaData *md = new occi::MetaData(data[i]);
+        Dart_Handle mdata = NewInstanceWithPeer("ColumnMetadata", (void *)md);
+
+        Dart_SetPeer(mdata, (void *)md);
+        Dart_NewWeakPersistentHandle(mdata,
+                                     (void *)md,
+                                     sizeof(md),
+                                     OracleMetadata_Finalizer);
+
+        Dart_ListSetAt(list, i, mdata);
+    }
+
+    Dart_SetReturnValue(args, list);
+
     Dart_ExitScope();
-    */
 }
 
 void OracleResultSet_cancel(Dart_NativeArguments args) {
