@@ -217,7 +217,7 @@ class Clob {
   int write(int amount, List<int> buffer, int offset) native 'OracleClob_write';
 }
 
-class _Metadata {
+abstract class Metadata {
   bool getBoolean(int attrId) native 'OracleMetadata_getBoolean';
   
   int getInt(int attrId) native 'OracleMetadata_getInt';
@@ -231,6 +231,6 @@ class _Metadata {
   int getUInt(int attrId) native 'OracleMetadata_getUInt';
 }
 
-class ColumnMetadata extends _Metadata {
+class ColumnMetadata extends Metadata {
   ColumnMetadata._();
 }
