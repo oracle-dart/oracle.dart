@@ -217,20 +217,139 @@ class Clob {
   int write(int amount, List<int> buffer, int offset) native 'OracleClob_write';
 }
 
-abstract class Metadata {
-  bool getBoolean(int attrId) native 'OracleMetadata_getBoolean';
-  
-  int getInt(int attrId) native 'OracleMetadata_getInt';
-  
-  num getNumber(int attrId) native 'OracleMetadata_getNumber';
-  
-  String getString(int attrId) native 'OracleMetadata_getString';
-  
-  DateTime getTimestamp(int attrId) native 'OracleMetadata_getTimestamp';
-  
-  int getUInt(int attrId) native 'OracleMetadata_getUInt';
+class _MetadataAttrs {
+  final int _value;
+
+  int get value => _value;
+
+  const _MetadataAttrs(this._value);
+
+  static const ATTR_PTYPE = const _MetadataAttrs(123);
+  static const ATTR_TIMESTAMP = const _MetadataAttrs(119);
+  static const ATTR_OBJ_ID = const _MetadataAttrs(136);
+  static const ATTR_OBJ_NAME = const _MetadataAttrs(134);
+  static const ATTR_OBJ_SCHEMA = const _MetadataAttrs(135);
+  static const ATTR_OBJID = const _MetadataAttrs(122);
+  static const ATTR_NUM_COLS = const _MetadataAttrs(102);
+  static const ATTR_LIST_COLUMNS = const _MetadataAttrs(103);
+  static const ATTR_REF_TDO = const _MetadataAttrs(110);
+  static const ATTR_IS_TEMPORARY = const _MetadataAttrs(130);
+  static const ATTR_IS_TYPED = const _MetadataAttrs(131);
+  static const ATTR_DURATION = const _MetadataAttrs(132);
+  static const ATTR_COLLECTION_ELEMENT = const _MetadataAttrs(227);
+  static const ATTR_RDBA = const _MetadataAttrs(104);
+  static const ATTR_TABLESPACE = const _MetadataAttrs(126);
+  static const ATTR_CLUSTERED = const _MetadataAttrs(105);
+  static const ATTR_PARTITIONED = const _MetadataAttrs(106);
+  static const ATTR_INDEX_ONLY = const _MetadataAttrs(107);
+  static const ATTR_LIST_ARGUMENTS = const _MetadataAttrs(108);
+  static const ATTR_IS_INVOKER_RIGHTS = const _MetadataAttrs(133);
+  static const ATTR_LIST_SUBPROGRAMS = const _MetadataAttrs(109);
+  static const ATTR_NAME = const _MetadataAttrs(4);
+  static const ATTR_OVERLOAD_ID = const _MetadataAttrs(125);
+  static const ATTR_TYPECODE = const _MetadataAttrs(216);
+  static const ATTR_COLLECTION_TYPECODE = const _MetadataAttrs(217);
+  static const ATTR_VERSION = const _MetadataAttrs(218);
+  static const ATTR_IS_INCOMPLETE_TYPE = const _MetadataAttrs(219);
+  static const ATTR_IS_SYSTEM_TYPE = const _MetadataAttrs(220);
+  static const ATTR_IS_PREDEFINED_TYPE = const _MetadataAttrs(221);
+  static const ATTR_IS_TRANSIENT_TYPE = const _MetadataAttrs(222);
+  static const ATTR_IS_SYSTEM_GENERATED_TYPE = const _MetadataAttrs(223);
+  static const ATTR_HAS_NESTED_TABLE = const _MetadataAttrs(224);
+  static const ATTR_HAS_LOB = const _MetadataAttrs(225);
+  static const ATTR_HAS_FILE = const _MetadataAttrs(226);
+  static const ATTR_NUM_TYPE_ATTRS = const _MetadataAttrs(228);
+  static const ATTR_LIST_TYPE_ATTRS = const _MetadataAttrs(229);
+  static const ATTR_NUM_TYPE_METHODS = const _MetadataAttrs(230);
+  static const ATTR_LIST_TYPE_METHODS = const _MetadataAttrs(231);
+  static const ATTR_MAP_METHOD = const _MetadataAttrs(232);
+  static const ATTR_ORDER_METHOD = const _MetadataAttrs(233);
+  static const ATTR_DATA_SIZE = const _MetadataAttrs(1);
+  static const ATTR_DATA_TYPE = const _MetadataAttrs(2);
+  static const ATTR_PRECISION = const _MetadataAttrs(5);
+  static const ATTR_SCALE = const _MetadataAttrs(6);
+  static const ATTR_TYPE_NAME = const _MetadataAttrs(8);
+  static const ATTR_SCHEMA_NAME = const _MetadataAttrs(9);
+  static const ATTR_CHARSET_ID = const _MetadataAttrs(31);
+  static const ATTR_CHARSET_FORM = const _MetadataAttrs(32);
+  static const ATTR_ENCAPSULATION = const _MetadataAttrs(235);
+  static const ATTR_IS_CONSTRUCTOR = const _MetadataAttrs(241);
+  static const ATTR_IS_DESTRUCTOR = const _MetadataAttrs(242);
+  static const ATTR_IS_OPERATOR = const _MetadataAttrs(243);
+  static const ATTR_IS_SELFISH = const _MetadataAttrs(236);
+  static const ATTR_IS_MAP = const _MetadataAttrs(244);
+  static const ATTR_IS_ORDER = const _MetadataAttrs(245);
+  static const ATTR_IS_RNDS = const _MetadataAttrs(246);
+  static const ATTR_IS_RNPS = const _MetadataAttrs(247);
+  static const ATTR_IS_WNDS = const _MetadataAttrs(248);
+  static const ATTR_IS_WNPS = const _MetadataAttrs(249);
+  static const ATTR_NUM_ELEMS = const _MetadataAttrs(234);
+  static const ATTR_LINK = const _MetadataAttrs(111);
+  static const ATTR_MIN = const _MetadataAttrs(112);
+  static const ATTR_MAX = const _MetadataAttrs(113);
+  static const ATTR_INCR = const _MetadataAttrs(114);
+  static const ATTR_CACHE = const _MetadataAttrs(115);
+  static const ATTR_ORDER = const _MetadataAttrs(116);
+  static const ATTR_HW_MARK = const _MetadataAttrs(117);
+  static const ATTR_IS_NULL = const _MetadataAttrs(7);
+  static const ATTR_POSITION = const _MetadataAttrs(11);
+  static const ATTR_HAS_DEFAULT = const _MetadataAttrs(212);
+  static const ATTR_LEVEL = const _MetadataAttrs(211);
+  static const ATTR_IOMODE = const _MetadataAttrs(213);
+  static const ATTR_RADIX = const _MetadataAttrs(214);
+  static const ATTR_SUB_NAME = const _MetadataAttrs(10);
+  static const ATTR_LIST_OBJECTS = const _MetadataAttrs(261);
+  static const ATTR_NCHARSET_ID = const _MetadataAttrs(262);
+  static const ATTR_LIST_SCHEMAS = const _MetadataAttrs(263);
+  static const ATTR_MAX_PROC_LEN = const _MetadataAttrs(264);
+  static const ATTR_MAX_COLUMN_LEN = const _MetadataAttrs(265);
+  static const ATTR_CURSOR_COMMIT_BEHAVIOR = const _MetadataAttrs(266);
+  static const ATTR_MAX_CATALOG_NAMELEN = const _MetadataAttrs(267);
+  static const ATTR_CATALOG_LOCATION = const _MetadataAttrs(268);
+  static const ATTR_SAVEPOINT_SUPPORT = const _MetadataAttrs(269);
+  static const ATTR_NOWAIT_SUPPORT = const _MetadataAttrs(270);
+  static const ATTR_AUTOCOMMIT_DDL = const _MetadataAttrs(271);
+  static const ATTR_LOCKING_MODE = const _MetadataAttrs(272);
+  static const ATTR_IS_FINAL_TYPE = const _MetadataAttrs(279);
+  static const ATTR_IS_INSTANTIABLE_TYPE = const _MetadataAttrs(280);
+  static const ATTR_IS_SUBTYPE = const _MetadataAttrs(258);
+  static const ATTR_SUPERTYPE_SCHEMA_NAME = const _MetadataAttrs(259);
+  static const ATTR_SUPERTYPE_NAME = const _MetadataAttrs(260);
+  static const ATTR_FSPRECISION = const _MetadataAttrs(16);
+  static const ATTR_LFPRECISION = const _MetadataAttrs(17);
+  static const ATTR_IS_FINAL_METHOD = const _MetadataAttrs(281);
+  static const ATTR_IS_INSTANTIABLE_METHOD = const _MetadataAttrs(282);
+  static const ATTR_IS_OVERRIDING_METHOD = const _MetadataAttrs(283);
+  static const ATTR_CHAR_USED = const _MetadataAttrs(285);
+  static const ATTR_CHAR_SIZE = const _MetadataAttrs(286);
+  static const ATTR_COL_ENC = const _MetadataAttrs(102);
+  static const ATTR_COL_ENC_SALT = const _MetadataAttrs(103);
+  static const ATTR_TABLE_ENC = const _MetadataAttrs(417);
+  static const ATTR_TABLE_ENC_ALG = const _MetadataAttrs(418);
+  static const ATTR_TABLE_ENC_ALG_ID = const _MetadataAttrs(419);
 }
 
-class ColumnMetadata extends Metadata {
+abstract class _Metadata {
+  bool getBoolean(_MetadataAttrs attr) => getBoolean(attr.value);
+  bool getInt(_MetadataAttrs attr) => getInt(attr.value);
+  bool getNumber(_MetadataAttrs attr) => getNumber(attr.value);
+  bool getString(_MetadataAttrs attr) => getString(attr.value);
+  bool getTimestamp(_MetadataAttrs attr) => getTimestamp(attr.value);
+  bool getUInt(_MetadataAttrs attr) => getUInt(attr.value);
+
+  bool _getBoolean(int attrId) native 'OracleMetadata_getBoolean';
+
+  int _getInt(int attrId) native 'OracleMetadata_getInt';
+
+  num _getNumber(int attrId) native 'OracleMetadata_getNumber';
+
+  String _getString(int attrId) native 'OracleMetadata_getString';
+
+  DateTime _getTimestamp(int attrId) native 'OracleMetadata_getTimestamp';
+
+  int _getUInt(int attrId) native 'OracleMetadata_getUInt';
+}
+
+class ColumnMetadata extends _Metadata {
   ColumnMetadata._();
 }
