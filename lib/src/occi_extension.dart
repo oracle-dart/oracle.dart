@@ -331,11 +331,17 @@ class _MetadataAttrs {
 
 abstract class _Metadata {
   bool getBoolean(_MetadataAttrs attr) => getBoolean(attr.value);
-  bool getInt(_MetadataAttrs attr) => getInt(attr.value);
-  bool getNumber(_MetadataAttrs attr) => getNumber(attr.value);
-  bool getString(_MetadataAttrs attr) => getString(attr.value);
-  bool getTimestamp(_MetadataAttrs attr) => getTimestamp(attr.value);
-  bool getUInt(_MetadataAttrs attr) => getUInt(attr.value);
+  int getInt(_MetadataAttrs attr) => getInt(attr.value);
+  num getNumber(_MetadataAttrs attr) => getNumber(attr.value);
+  String getString(_MetadataAttrs attr) => getString(attr.value);
+  DateTime getTimestamp(_MetadataAttrs attr) => getTimestamp(attr.value);
+  int getUInt(_MetadataAttrs attr) => getUInt(attr.value);
+
+  int getObjectId() => getInt(_MetadataAttrs.ATTR_OBJID);
+  String getObjectName() => getString(_MetadataAttrs.ATTR_OBJ_NAME);
+  String getObjectSchema() => getString(_MetadataAttrs.ATTR_OBJ_SCHEMA);
+  // TODO: support ATTR_PTYPE
+  DateTime getObjectTimestamp() => getTimestamp(_MetadataAttrs.ATTR_TIMESTAMP);
 
   bool _getBoolean(int attrId) native 'OracleMetadata_getBoolean';
 
@@ -352,4 +358,17 @@ abstract class _Metadata {
 
 class ColumnMetadata extends _Metadata {
   ColumnMetadata._();
+
+  int getCharUsed() => getInt(_MetadataAttrs.ATTR_CHAR_USED);
+  int getCharSize() => getUInt(_MetadataAttrs.ATTR_CHAR_SIZE);
+  int getDataSize() => getUInt(_MetadataAttrs.ATTR_DATA_SIZE);
+  String getDataType() => getString(_MetadataAttrs.ATTR_DATA_TYPE);
+  String getName() => getString(_MetadataAttrs.ATTR_NAME);
+  int getPrecision() => getInt(_MetadataAttrs.ATTR_PRECISION);
+  int getScale() => getInt(_MetadataAttrs.ATTR_SCALE);
+  bool canNull() => getInt(_MetadataAttrs.ATTR_IS_NULL) != 0;
+  String getTypeName() => getString(_MetadataAttrs.ATTR_TYPE_NAME);
+  String getSchemaName() => getString(_MetadataAttrs.ATTR_SCHEMA_NAME);
+  int getCharsetId() => getInt(_MetadataAttrs.ATTR_CHARSET_ID);
+  String getCharsetForm() => getString(_MetadataAttrs.ATTR_CHARSET_FORM);
 }
