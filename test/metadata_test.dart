@@ -34,6 +34,8 @@ main() {
 
   group('Metadata', () {
     test('getString', () {
+      expect(metadata[0].getName(), equals('TEST_INT'));
+      expect(metadata[1].getName(), equals('TEST_STRING'));
     });
   });
 }

@@ -330,12 +330,12 @@ class _MetadataAttrs {
 }
 
 abstract class _Metadata {
-  bool getBoolean(_MetadataAttrs attr) => getBoolean(attr.value);
-  int getInt(_MetadataAttrs attr) => getInt(attr.value);
-  num getNumber(_MetadataAttrs attr) => getNumber(attr.value);
-  String getString(_MetadataAttrs attr) => getString(attr.value);
-  DateTime getTimestamp(_MetadataAttrs attr) => getTimestamp(attr.value);
-  int getUInt(_MetadataAttrs attr) => getUInt(attr.value);
+  bool getBoolean(_MetadataAttrs attr) => _getBoolean(attr.value);
+  int getInt(_MetadataAttrs attr) => _getInt(attr.value);
+  num getNumber(_MetadataAttrs attr) => _getNumber(attr.value);
+  String getString(_MetadataAttrs attr) => _getString(attr.value);
+  DateTime getTimestamp(_MetadataAttrs attr) => _getTimestamp(attr.value);
+  int getUInt(_MetadataAttrs attr) => _getUInt(attr.value);
 
   int getObjectId() => getInt(_MetadataAttrs.ATTR_OBJID);
   String getObjectName() => getString(_MetadataAttrs.ATTR_OBJ_NAME);
