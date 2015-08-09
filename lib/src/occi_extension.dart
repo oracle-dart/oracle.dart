@@ -329,6 +329,33 @@ class _MetadataAttrs {
   static const ATTR_TABLE_ENC_ALG_ID = const _MetadataAttrs(419);
 }
 
+enum ParamType {
+  UNKNOWN,
+  TABLE,
+  VIEW,
+  PROCEDURE,
+  FUNCTION,
+  PACKAGE,
+  TYPE,
+  SYNONYM,
+  SEQUENCE,
+  COLUMN,
+  ARGUMENT,
+  LIST,
+  TYPE_ATTRIBUTE,
+  TYPE_METHOD,
+  TYPE_ARGUMENT,
+  TYPE_RESULT,
+  SCHEMA,
+  DATABASE,
+  RULE,
+  RULE_SET,
+  EVALUATION_CONTEXT,
+  TABLE_ALIAS,
+  VARIABLE_TYPE,
+  NAME_VALUE
+}
+
 abstract class _Metadata {
   bool getBoolean(_MetadataAttrs attr) => _getBoolean(attr.value);
   int getInt(_MetadataAttrs attr) => _getInt(attr.value);
@@ -337,10 +364,10 @@ abstract class _Metadata {
   DateTime getTimestamp(_MetadataAttrs attr) => _getTimestamp(attr.value);
   int getUInt(_MetadataAttrs attr) => _getUInt(attr.value);
 
-  int getObjectId() => getInt(_MetadataAttrs.ATTR_OBJID);
+  int getObjectId() => getUInt(_MetadataAttrs.ATTR_OBJ_ID);
   String getObjectName() => getString(_MetadataAttrs.ATTR_OBJ_NAME);
   String getObjectSchema() => getString(_MetadataAttrs.ATTR_OBJ_SCHEMA);
-  // TODO: support ATTR_PTYPE
+  ParamType getParamType() => ParamType.values[getInt(_MetadataAttrs.ATTR_PTYPE)];
   DateTime getObjectTimestamp() => getTimestamp(_MetadataAttrs.ATTR_TIMESTAMP);
 
   bool _getBoolean(int attrId) native 'OracleMetadata_getBoolean';
@@ -359,16 +386,16 @@ abstract class _Metadata {
 class ColumnMetadata extends _Metadata {
   ColumnMetadata._();
 
-  int getCharUsed() => getInt(_MetadataAttrs.ATTR_CHAR_USED);
+  bool isCharUsed() => getUInt(_MetadataAttrs.ATTR_CHAR_USED) == 1;
   int getCharSize() => getUInt(_MetadataAttrs.ATTR_CHAR_SIZE);
-  int getDataSize() => getUInt(_MetadataAttrs.ATTR_DATA_SIZE);
-  String getDataType() => getString(_MetadataAttrs.ATTR_DATA_TYPE);
+  int getDataSize() => getInt(_MetadataAttrs.ATTR_DATA_SIZE);
+  int getDataType() => getInt(_MetadataAttrs.ATTR_DATA_TYPE);
   String getName() => getString(_MetadataAttrs.ATTR_NAME);
   int getPrecision() => getInt(_MetadataAttrs.ATTR_PRECISION);
   int getScale() => getInt(_MetadataAttrs.ATTR_SCALE);
-  bool canNull() => getInt(_MetadataAttrs.ATTR_IS_NULL) != 0;
+  bool canNull() => getBoolean(_MetadataAttrs.ATTR_IS_NULL);
   String getTypeName() => getString(_MetadataAttrs.ATTR_TYPE_NAME);
   String getSchemaName() => getString(_MetadataAttrs.ATTR_SCHEMA_NAME);
-  int getCharsetId() => getInt(_MetadataAttrs.ATTR_CHARSET_ID);
-  String getCharsetForm() => getString(_MetadataAttrs.ATTR_CHARSET_FORM);
+  //int getCharsetId() => getInt(_MetadataAttrs.ATTR_CHARSET_ID);
+  //String getCharsetForm() => getString(_MetadataAttrs.ATTR_CHARSET_FORM);
 }
