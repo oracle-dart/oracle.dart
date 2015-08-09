@@ -217,6 +217,114 @@ class Clob {
   int write(int amount, List<int> buffer, int offset) native 'OracleClob_write';
 }
 
+class DataType {
+  final int _value;
+
+  int get value => _value;
+
+  const DataType(this._value);
+
+  static var _map = {
+    1: CHR,
+    2: NUM,
+    3: INT,
+    4: FLT,
+    5: STR,
+    6: VNU,
+    7: PDN,
+    8: LNG,
+    9: VCS,
+    10: NON,
+    11: RID,
+    12: DAT,
+    15: VBI,
+    21: BFlOAT,
+    22: BDOUBLE,
+    23: BIN,
+    24: LBI,
+    68: UIN,
+    91: SLS,
+    94: LVC,
+    95: LVB,
+    96: AFC,
+    97: AVC,
+    100: IBFLOAT,
+    101: IBDOUBLE,
+    102: CUR,
+    104: RDD,
+    105: LAB,
+    106: OSL,
+    108: NTY,
+    110: REF,
+    112: CLOB,
+    113: BLOB,
+    114: BFILE,
+    115: CFILE,
+    116: RSET,
+    122: NCO,
+    156: VST,
+    156: ODT,
+    184: DATE,
+    185: TIME,
+    186: TIME_TZ,
+    187: TIMESTAMP,
+    188: TIMESTAMP_TZ,
+    189: INTERVAL_YM,
+    190: INTERVAL_DS,
+    232: INTERVAL_LTZ,
+  };
+
+  static forNum(int i) => _map[i];
+
+  static const CHR = const DataType(1);
+  static const NUM = const DataType(2);
+  static const INT = const DataType(3);
+  static const FLT = const DataType(4);
+  static const STR = const DataType(5);
+  static const VNU = const DataType(6);
+  static const PDN = const DataType(7);
+  static const LNG = const DataType(8);
+  static const VCS = const DataType(9);
+  static const NON = const DataType(10);
+  static const RID = const DataType(11);
+  static const DAT = const DataType(12);
+  static const VBI = const DataType(15);
+  static const BFlOAT = const DataType(21);
+  static const BDOUBLE = const DataType(22);
+  static const BIN = const DataType(23);
+  static const LBI = const DataType(24);
+  static const UIN = const DataType(68);
+  static const SLS = const DataType(91);
+  static const LVC = const DataType(94);
+  static const LVB = const DataType(95);
+  static const AFC = const DataType(96);
+  static const AVC = const DataType(97);
+  static const IBFLOAT = const DataType(100);
+  static const IBDOUBLE = const DataType(101);
+  static const CUR = const DataType(102);
+  static const RDD = const DataType(104);
+  static const LAB = const DataType(105);
+  static const OSL = const DataType(106);
+  static const NTY = const DataType(108);
+  static const REF = const DataType(110);
+  static const CLOB = const DataType(112);
+  static const BLOB = const DataType(113);
+  static const BFILE = const DataType(114);
+  static const CFILE = const DataType(115);
+  static const RSET = const DataType(116);
+  static const NCO = const DataType(122);
+  static const VST = const DataType(156);
+  static const ODT = const DataType(156);
+  static const DATE = const DataType(184);
+  static const TIME = const DataType(185);
+  static const TIME_TZ = const DataType(186);
+  static const TIMESTAMP = const DataType(187);
+  static const TIMESTAMP_TZ = const DataType(188);
+  static const INTERVAL_YM = const DataType(189);
+  static const INTERVAL_DS = const DataType(190);
+  static const INTERVAL_LTZ = const DataType(232);
+}
+
 class _MetadataAttrs {
   final int _value;
 
@@ -389,7 +497,8 @@ class ColumnMetadata extends _Metadata {
   bool isCharUsed() => getUInt(_MetadataAttrs.ATTR_CHAR_USED) == 1;
   int getCharSize() => getUInt(_MetadataAttrs.ATTR_CHAR_SIZE);
   int getDataSize() => getInt(_MetadataAttrs.ATTR_DATA_SIZE);
-  int getDataType() => getInt(_MetadataAttrs.ATTR_DATA_TYPE);
+  DataType getDataType() =>
+    DataType.forNum(getInt(_MetadataAttrs.ATTR_DATA_TYPE));
   String getName() => getString(_MetadataAttrs.ATTR_NAME);
   int getPrecision() => getInt(_MetadataAttrs.ATTR_PRECISION);
   int getScale() => getInt(_MetadataAttrs.ATTR_SCALE);

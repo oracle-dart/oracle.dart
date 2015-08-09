@@ -64,8 +64,8 @@ main() {
     });
 
     test('getDataType', () {
-      expect(metadata[0].getDataType(), 2);
-      expect(metadata[1].getDataType(), 1); 
+      expect(metadata[0].getDataType(), oracle.DataType.NUM);
+      expect(metadata[1].getDataType(), oracle.DataType.CHR); 
     });
 
     test('canNull', () {
