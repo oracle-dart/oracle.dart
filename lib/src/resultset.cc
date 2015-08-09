@@ -186,7 +186,17 @@ void OracleResultSet_getDate(Dart_NativeArguments args) {
 }
 
 void OracleResultSet_getTimestamp(Dart_NativeArguments args) {
+    Dart_EnterScope();
+    
+    auto rs = getThis<occi::ResultSet>(args);
+    int64_t index = getDartArg<int64_t>(args, 1);
 
+    try {
+        occi::Timestamp ts = rs->getTimestamp(index);
+        Dart_SetReturnValue(args, NewDateTimeFromOracleTimestamp(ts));
+    } CATCH_SQL_EXCEPTION;
+
+    Dart_ExitScope();
 }
 
 void OracleResultSet_getRowID(Dart_NativeArguments args) {

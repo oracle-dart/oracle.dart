@@ -33,6 +33,62 @@ Dart_Handle NewInstanceWithPeer(const char *class_name, void *peer) {
     return obj;
 }
 
+Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
+    Dart_Handle lib = GetDartLibrary("dart:core");
+    Dart_Handle dtType = HandleError(Dart_GetType(lib, Dart_NewStringFromCString("DateTime"), 0, NULL));
+    Dart_Handle durType = HandleError(Dart_GetType(lib, Dart_NewStringFromCString("Duration"), 0, NULL));
+
+    int year, tzOffsetHour, tzOffsetMinute;
+    unsigned int month, day, hour, minute, second, fs;
+
+    ts.getDate(year, month, day);
+    ts.getTime(hour, minute, second, fs);
+    ts.getTimeZoneOffset(tzOffsetHour, tzOffsetMinute);
+
+    // Construct the DateTime object as UTC
+    std::vector<Dart_Handle> dtArgs = {
+        Dart_NewInteger(year),
+        Dart_NewInteger(month),
+        Dart_NewInteger(day),
+        Dart_NewInteger(hour),
+        Dart_NewInteger(minute),
+        Dart_NewInteger(second),
+        Dart_NewInteger(fs / 1E6) // assuming fractional seconds are nanoseconds
+    };
+
+    Dart_Handle dt = HandleError(Dart_New(dtType,
+                                          Dart_NewStringFromCString("utc"),
+                                          7,
+                                          &dtArgs[0]));
+
+
+    // Handle the offset by creating a Duration object and adding
+    // it to the created DateTime object
+    std::vector<Dart_Handle> durArgs = {
+        Dart_NewInteger(0) /* days */,
+        Dart_NewInteger(tzOffsetHour),
+        Dart_NewInteger(tzOffsetMinute)
+    };
+
+    printf("offsets: %d %d\n", tzOffsetHour, tzOffsetMinute);
+
+    Dart_Handle microseconds = HandleError(Dart_NewInteger(((tzOffsetHour * 60) + tzOffsetMinute) * 60 * 1e6));
+
+    Dart_Handle duration = HandleError(Dart_New(durType,
+                                                Dart_NewStringFromCString("_microseconds"),
+                                                1,
+                                                &microseconds));
+
+    return dt;
+
+
+    /*
+     *return HandleError(Dart_Invoke(dt,
+     *                               Dart_NewStringFromCString("add"),
+     *                               1,
+     *                               &duration));
+     */
+}
 
 
 void printDartToString(Dart_Handle dh) {

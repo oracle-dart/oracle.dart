@@ -71,7 +71,7 @@ main() {
     var stmt = con.createStatement("BEGIN EXECUTE IMMEDIATE 'DROP TABLE resultset_test'; EXCEPTION WHEN OTHERS THEN NULL; END;");
     stmt.execute();
     con.commit();
-    stmt = con.createStatement("CREATE TABLE resultset_test ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_number NUMBER)");
+    stmt = con.createStatement("CREATE TABLE resultset_test ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_number NUMBER, test_ts TIMESTAMP)");
     stmt.execute();
     con.commit();
   }); 
@@ -113,6 +113,15 @@ main() {
       insertNulls();
       expect(() => queryAll().getDouble(1), returnsNormally);
       expect(queryAll().getDouble(1), isNull);
+    });
+
+    test ('getTimestamp with TIMESTAMP', () {
+      con.execute("INSERT INTO resultset_test (test_ts) "
+                  "VALUES (to_timestamp('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+      var rs = con.executeQuery('SELECT test_ts from resultset_test');
+      rs.next(1);
+
+      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
     });
 
     test('getColumnListMetadata', () {
