@@ -115,7 +115,8 @@ main() {
       expect(queryAll().getDouble(1), isNull);
     });
 
-    test ('getTimestamp with TIMESTAMP', () {
+    test ('getTimestamp with TIMESTAMP (UTC)', () {
+      con.execute("ALTER SESSION SET time_zone = 'UTC'");
       con.execute("INSERT INTO resultset_test (test_ts) "
                   "VALUES (to_timestamp('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'))");
       var rs = con.executeQuery('SELECT test_ts from resultset_test');

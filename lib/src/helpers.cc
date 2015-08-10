@@ -70,8 +70,6 @@ Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
         Dart_NewInteger(tzOffsetMinute)
     };
 
-    printf("offsets: %d %d\n", tzOffsetHour, tzOffsetMinute);
-
     Dart_Handle microseconds = HandleError(Dart_NewInteger(((tzOffsetHour * 60) + tzOffsetMinute) * 60 * 1e6));
 
     Dart_Handle duration = HandleError(Dart_New(durType,
@@ -79,15 +77,10 @@ Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
                                                 1,
                                                 &microseconds));
 
-    return dt;
-
-
-    /*
-     *return HandleError(Dart_Invoke(dt,
-     *                               Dart_NewStringFromCString("add"),
-     *                               1,
-     *                               &duration));
-     */
+    return HandleError(Dart_Invoke(dt,
+                                   Dart_NewStringFromCString("add"),
+                                   1,
+                                   &duration));
 }
 
 
