@@ -13,22 +13,35 @@ final cFiles = [
   'environment',
   'blob',
   'clob',
+  'metadata',
 ];
+
+getCompiler() {
+  var compilerList = ['clang', 'gcc'];
+
+  for (var c in compilerList) {
+    if (Process.runSync('which', [c]).exitCode == 0) {
+      return c;
+    }
+  }
+}
 
 @DefaultTask()
 build() {
   final oracleHome = Platform.environment['ORACLE_HOME'];
+  if (oracleHome == null) {
+    throw new Exception('Environment variable ORACLE_HOME must be set');
+  }
   final oracleIncludes = oracleHome.replaceFirst('lib', 'include').replaceFirst('lib', '');
 
   print('ORACLE_HOME=$oracleHome');
   print('ORACLE INCLUDES=$oracleIncludes');
 
-  var gccArgs = cFiles.map((x) => 'lib/src/$x.cc').toList();
-  gccArgs.addAll(['-std=c++0x', '-Wall', '-fPIC', '-rdynamic','-shared', '-I${sdkDir.path}/include', '-I$oracleIncludes', '-Ilib/src/', '-DDART_SHARED_LIB', '-L$oracleHome', '-Wl,-R$oracleHome', '-olib/src/libocci_extension.so']);
-  gccArgs.addAll(['-locci', '-lclntsh']);
+  var args = cFiles.map((x) => 'lib/src/$x.cc').toList();
+  args.addAll(['-std=c++0x', '-Wall', '-fPIC', '-rdynamic','-shared', '-I${sdkDir.path}/include', '-I$oracleIncludes', '-Ilib/src/', '-DDART_SHARED_LIB', '-L$oracleHome', '-Wl,-R$oracleHome', '-olib/src/libocci_extension.so']);
+  args.addAll(['-locci', '-lclntsh']);
 
-  print(gccArgs);
-  run('gcc', arguments: gccArgs);
+  run(getCompiler(), arguments: args);
 }
 
 @Task()

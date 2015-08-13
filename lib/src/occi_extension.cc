@@ -14,6 +14,7 @@
 #include "bfile.h"
 #include "blob.h"
 #include "clob.h"
+#include "metadata.h"
 
 // Forward declaration of ResolveName function.
 Dart_NativeFunction ResolveName(Dart_Handle name, int argc, bool* auto_setup_scope);
@@ -85,6 +86,12 @@ FunctionLookup function_list[] = {
     {"OracleClob_copy", OracleClob_copy},
     {"OracleClob_length", OracleClob_length},
     {"OracleClob_trim", OracleClob_trim},
+    {"OracleMetadata_getBoolean", OracleMetadata_getBoolean},
+    {"OracleMetadata_getInt", OracleMetadata_getInt},
+    {"OracleMetadata_getNumber", OracleMetadata_getNumber},
+    {"OracleMetadata_getString", OracleMetadata_getString},
+    {"OracleMetadata_getTimeStamp", OracleMetadata_getTimeStamp},
+    {"OracleMetadata_getUInt", OracleMetadata_getUInt},
     {NULL, NULL}};
 
 Dart_NativeFunction ResolveName(Dart_Handle name, int argc, bool* auto_setup_scope) {

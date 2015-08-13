@@ -114,5 +114,17 @@ main() {
       expect(() => queryAll().getDouble(1), returnsNormally);
       expect(queryAll().getDouble(1), isNull);
     });
+
+    test('getColumnListMetadata', () {
+      var f = () => con.executeQuery('SELECT test_int, test_string FROM resultset_test').getColumnListMetadata();
+      expect(f, returnsNormally);
+
+      var metadataList = f();
+      expect(metadataList.length, equals(2));
+
+      for (var md in metadataList) {
+        expect(md is oracle.ColumnMetadata, isTrue);
+      }
+    });
   });
 }
