@@ -29,6 +29,9 @@ getCompiler() {
 @DefaultTask()
 build() {
   final oracleHome = Platform.environment['ORACLE_HOME'];
+  if (oracleHome == null) {
+    throw new Exception('Environment variable ORACLE_HOME must be set');
+  }
   final oracleIncludes = oracleHome.replaceFirst('lib', 'include').replaceFirst('lib', '');
 
   print('ORACLE_HOME=$oracleHome');
