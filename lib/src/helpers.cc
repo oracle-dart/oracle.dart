@@ -87,6 +87,16 @@ Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
                                    &duration));
 }
 
+oracle::occi::Timestamp NewOracleTimestampFromDateTime(Dart_Handle dateTime) {
+    oracle::occi::Timestamp ts;
+    if (Dart_IsNull(dateTime)) {
+        ts.setNull();
+        return ts;
+    }
+
+    return ts; 
+}
+
 
 void printDartToString(Dart_Handle dh) {
     char *tostr;
