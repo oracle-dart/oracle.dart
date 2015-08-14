@@ -122,7 +122,7 @@ main() {
       var rs = con.executeQuery('SELECT test_ts from resultset_test');
       rs.next(1);
 
-      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 2)));
+      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
     });
 
     test('getColumnListMetadata', () {
