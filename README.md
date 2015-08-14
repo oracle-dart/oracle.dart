@@ -1,6 +1,6 @@
 # oracle
 
-[![Build Status](http://oracledart.cjlucas.net:8080/buildStatus/icon?job=oracle.dart)](http://45.79.154.118:8080/job/oracle.dart/)
+[![Build Status](http://oracledart.cjlucas.net:8080/buildStatus/icon?job=oracle.dart)](http://oracledart.cjlucas.net:8080/job/oracle.dart/)
 
 Provides Oracle database access support for Dart via an API that is similar to
 OCCI.
