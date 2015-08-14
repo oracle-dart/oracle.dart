@@ -78,7 +78,7 @@ Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
                                                 &microseconds));
 
     return HandleError(Dart_Invoke(dt,
-                                   Dart_NewStringFromCString("add"),
+                                   Dart_NewStringFromCString("subtract"),
                                    1,
                                    &duration));
 }

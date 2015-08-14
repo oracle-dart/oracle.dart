@@ -125,26 +125,26 @@ main() {
       expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
     });
 
-    test ('getTimestamp with TIMESTAMP (UTC-4)', () {
-      con.execute("ALTER SESSION SET time_zone = 'etc/GMT-4'");
+    test ('getTimestamp with TIMESTAMP (EST/GMT-5)', () {
+      con.execute("ALTER SESSION SET time_zone = 'EST'");
       con.execute("INSERT INTO resultset_test (test_ts) "
                   "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
       var rs = con.executeQuery('SELECT test_ts from resultset_test');
       rs.next(1);
 
-      // expected time should be 4 hours ahead
-      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 9, 2, 3)));
+      // expected time should be 5 hours ahead
+      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
     });
 
-    test ('getTimestamp with TIMESTAMP (UTC+6)', () {
-      con.execute("ALTER SESSION SET time_zone = 'etc/GMT+6'");
+    test ('getTimestamp with TIMESTAMP (PRC/UTC+8)', () {
+      con.execute("ALTER SESSION SET time_zone = 'PRC'");
       con.execute("INSERT INTO resultset_test (test_ts) "
                   "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
       var rs = con.executeQuery('SELECT test_ts from resultset_test');
       rs.next(1);
 
-      // expected time should be 6 hours behind
-      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 6, 23, 2, 3)));
+      // expected time should be 8 hours behind
+      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
     });
 
     test('getColumnListMetadata', () {
