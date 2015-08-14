@@ -74,6 +74,9 @@ main() {
     stmt = con.createStatement("CREATE TABLE resultset_test ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_number NUMBER, test_ts TIMESTAMP)");
     stmt.execute();
     con.commit();
+   
+    // ensure timezone is always UTC 
+    con.execute("ALTER SESSION SET time_zone = 'UTC'");
   }); 
   
   tearDown((){
