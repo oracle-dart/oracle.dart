@@ -125,6 +125,17 @@ main() {
       expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
     });
 
+    test ('getTimestamp with TIMESTAMP (EST)', () {
+      con.execute("ALTER SESSION SET time_zone = 'EST'");
+      con.execute("INSERT INTO resultset_test (test_ts) "
+                  "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+      var rs = con.executeQuery('SELECT test_ts from resultset_test');
+      rs.next(1);
+
+      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 0, 2, 3)));
+    });
+
+
     test('getColumnListMetadata', () {
       var f = () => con.executeQuery('SELECT test_int, test_string FROM resultset_test').getColumnListMetadata();
       expect(f, returnsNormally);
