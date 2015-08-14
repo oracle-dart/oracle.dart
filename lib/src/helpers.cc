@@ -34,6 +34,10 @@ Dart_Handle NewInstanceWithPeer(const char *class_name, void *peer) {
 }
 
 Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
+    if (ts.isNull()) {
+        return Dart_Null();
+    }
+
     Dart_Handle lib = GetDartLibrary("dart:core");
     Dart_Handle dtType = HandleError(Dart_GetType(lib, Dart_NewStringFromCString("DateTime"), 0, NULL));
     Dart_Handle durType = HandleError(Dart_GetType(lib, Dart_NewStringFromCString("Duration"), 0, NULL));

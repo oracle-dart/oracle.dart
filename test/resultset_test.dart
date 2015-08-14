@@ -38,6 +38,7 @@ class InsertHelper {
 
   getInt() => _rs.getInt(1);
   getDouble() => _rs.getDouble(1);
+  getTimestamp() => _rs.getTimestamp(1);
 }
 
 main() {
@@ -157,6 +158,13 @@ main() {
       rs.next(1);
 
       expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 5, 2, 3, 123)));
+    });
+
+    test('getTimestamp with NULL', () {
+      insertNulls();
+      var f = () => queryAll().getTimestamp(1);
+      expect(f, returnsNormally);
+      expect(f(), isNull);
     });
 
     test('getColumnListMetadata', () {
