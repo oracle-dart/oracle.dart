@@ -87,84 +87,91 @@ main() {
   });
 
   group('ResultSet', () {
-    test('getInt with INT', () {
-      expect(insertIntoColType('INT', 5).getInt(), equals(5));
+    group('.getInt', () {
+      test('with INT', () {
+        expect(insertIntoColType('INT', 5).getInt(), equals(5));
+      });
+
+      test('with NUMBER', () {
+        expect(insertIntoColType('NUMBER', 5).getInt(), equals(5));
+      });
+
+      test('with NULL', () {
+        insertNulls();
+        expect(() => queryAll().getInt(1), returnsNormally);
+        expect(queryAll().getInt(1), isNull);
+      });
     });
 
-    test('getInt with NUMBER', () {
-      expect(insertIntoColType('NUMBER', 5).getInt(), equals(5));
-    });
-    
-    test('getInt with NULL', () {
-      insertNulls();
-      expect(() => queryAll().getInt(1), returnsNormally);
-      expect(queryAll().getInt(1), isNull);
-    });
+    group('.getDouble', () {
+      test('with INT', () {
+        expect(insertIntoColType('INT', 5).getDouble(), closeTo(5, MAX_DELTA));
+      });
 
-    test('getDouble with INT', () {
-      expect(insertIntoColType('INT', 5).getDouble(), closeTo(5, MAX_DELTA));
-    });
+      test('with NUMBER', () {
+        expect(insertIntoColType('NUMBER', 5.1).getDouble(), closeTo(5.1, MAX_DELTA));
+      });
 
-    test('getDouble with NUMBER', () {
-      expect(insertIntoColType('NUMBER', 5.1).getDouble(), closeTo(5.1, MAX_DELTA));
-    });
+      test('with VARCHAR', () {
+        expect(() => insertIntoColType('VARCHAR', 'val').getDouble(), throws);
+      });
 
-    test('getDouble with VARCHAR', () {
-      expect(() => insertIntoColType('VARCHAR', 'val').getDouble(), throws);
-    });
-    
-    test('getDouble with NULL', () {
-      insertNulls();
-      expect(() => queryAll().getDouble(1), returnsNormally);
-      expect(queryAll().getDouble(1), isNull);
+      test('with NULL', () {
+        insertNulls();
+        expect(() => queryAll().getDouble(1), returnsNormally);
+        expect(queryAll().getDouble(1), isNull);
+      });
     });
 
-    test('getTimestamp with TIMESTAMP (UTC)', () {
-      con.execute("ALTER SESSION SET time_zone = 'UTC'");
-      con.execute("INSERT INTO resultset_test (test_ts) "
-                  "VALUES (to_timestamp('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'))");
-      var rs = con.executeQuery('SELECT test_ts from resultset_test');
-      rs.next(1);
 
-      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
-    });
+    group('.getTimestamp', () {
+      test('with TIMESTAMP (UTC)', () {
+        con.execute("ALTER SESSION SET time_zone = 'UTC'");
+        con.execute("INSERT INTO resultset_test (test_ts) "
+                    "VALUES (to_timestamp('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+        var rs = con.executeQuery('SELECT test_ts from resultset_test');
+        rs.next(1);
 
-    test('getTimestamp with TIMESTAMP (EST/GMT-5)', () {
-      con.execute("ALTER SESSION SET time_zone = 'EST'");
-      con.execute("INSERT INTO resultset_test (test_ts) "
-                  "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
-      var rs = con.executeQuery('SELECT test_ts from resultset_test');
-      rs.next(1);
+        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
+      });
 
-      // expected time should be 5 hours ahead
-      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
-    });
+      test('with TIMESTAMP (EST/GMT-5)', () {
+        con.execute("ALTER SESSION SET time_zone = 'EST'");
+        con.execute("INSERT INTO resultset_test (test_ts) "
+                    "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+        var rs = con.executeQuery('SELECT test_ts from resultset_test');
+        rs.next(1);
 
-    test('getTimestamp with TIMESTAMP (PRC/UTC+8)', () {
-      con.execute("ALTER SESSION SET time_zone = 'PRC'");
-      con.execute("INSERT INTO resultset_test (test_ts) "
-                  "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
-      var rs = con.executeQuery('SELECT test_ts from resultset_test');
-      rs.next(1);
+        // expected time should be 5 hours ahead
+        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
+      });
 
-      // expected time should be 8 hours behind
-      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
-    });
+      test('with TIMESTAMP (PRC/UTC+8)', () {
+        con.execute("ALTER SESSION SET time_zone = 'PRC'");
+        con.execute("INSERT INTO resultset_test (test_ts) "
+                    "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+        var rs = con.executeQuery('SELECT test_ts from resultset_test');
+        rs.next(1);
 
-    test('getTimestamp with subseconds', () {
-      con.execute("INSERT INTO resultset_test (test_ts) "
-                  "VALUES (to_timestamp('1988-11-07 05:02:03.123', 'YYYY-MM-DD HH:MI:SS.FF'))");
-      var rs = con.executeQuery('SELECT test_ts from resultset_test');
-      rs.next(1);
+        // expected time should be 8 hours behind
+        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
+      });
 
-      expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 5, 2, 3, 123)));
-    });
+      test('with subseconds', () {
+        con.execute("INSERT INTO resultset_test (test_ts) "
+                    "VALUES (to_timestamp('1988-11-07 05:02:03.123', 'YYYY-MM-DD HH:MI:SS.FF'))");
+        var rs = con.executeQuery('SELECT test_ts from resultset_test');
+        rs.next(1);
 
-    test('getTimestamp with NULL', () {
-      insertNulls();
-      var f = () => queryAll().getTimestamp(1);
-      expect(f, returnsNormally);
-      expect(f(), isNull);
+        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 5, 2, 3, 123)));
+      });
+
+      test('with NULL', () {
+        insertNulls();
+        var f = () => queryAll().getTimestamp(1);
+        expect(f, returnsNormally);
+        expect(f(), isNull);
+      });
     });
 
     test('getColumnListMetadata', () {
