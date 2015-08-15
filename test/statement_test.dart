@@ -74,6 +74,17 @@ main() {
 
       expect(rs.getTimestamp(1), dt);
     });
+    
+    test('setTimestamp with null', () {
+      var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
+      stmt.setTimestamp(1, null);
+      stmt.execute();
+
+      var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')
+        ..next(1);
+
+      expect(rs.getTimestamp(1), null);
+    });
   });
 
 
