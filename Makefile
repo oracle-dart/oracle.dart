@@ -1,11 +1,17 @@
 .PHONY: all check-env clean
 
+
 CC := clang
 CFLAGS = -std=c++11 -Wall -fPIC
 
 SRC_DIR=$(CURDIR)/lib/src
 TARGETS=$(wildcard $(SRC_DIR)/*.cc)
 OBJECTS=$(TARGETS:%.cc=%.o)
+
+# fallback to gcc if clang is not present
+ifeq (, $(shell which clang))
+	CC = gcc
+endif
 
 all: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) \
