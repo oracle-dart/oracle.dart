@@ -20,7 +20,6 @@ all: $(OBJECTS)
 		-I $(DART_SDK)/include \
 		-I $(ORACLE_INCLUDE) \
 		-I $(SRC_DIR) \
-		-DDART_SHARED_LIB \
 		-L $(ORACLE_LIB) \
 		-olib/src/libocci_extension.so \
 		-locci \
