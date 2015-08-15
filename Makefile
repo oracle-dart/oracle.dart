@@ -1,15 +1,14 @@
 .PHONY: all check-env clean
 
-TARGETS=$(wildcard lib/src/*.cc)
-OBJECTS=$(TARGETS:%.cc=%.o)
+CC := clang
+CFLAGS = -std=c++11 -Wall -fPIC
 
 SRC_DIR=$(CURDIR)/lib/src
+TARGETS=$(wildcard $(SRC_DIR)/*.cc)
+OBJECTS=$(TARGETS:%.cc=%.o)
 
-all: $(TARGETS:.cc=.o)
-	clang $(OBJECTS) \
-		-std=c++11 \
-		-Wall \
-		-fPIC \
+all: $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) \
 		-rdynamic \
 		-shared \
 		-I $(DART_SDK)/include \
@@ -22,10 +21,7 @@ all: $(TARGETS:.cc=.o)
 		-lclntsh
 
 %.o: %.cc
-	clang \
-		-std=c++11 \
-		-Wall \
-		-fPIC \
+	$(CC) $(CFLAGS) \
 		-c \
 		-I $(ORACLE_INCLUDE) \
 		-I $(DART_SDK)/include \
