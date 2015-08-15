@@ -136,4 +136,13 @@ main() {
         expect(results.get(2), equals("hello world"));
         expect(results.get(3).toString(), equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
   });
+  test('test row', (){
+        var stmt = con.createStatement("SELECT * FROM test_table");
+        var results = stmt.executeQuery();
+        results.next(1);
+        var row = results.row();
+        expect(row['TEST_INT'], equals(34));
+        expect(row['TEST_STRING'], equals("hello world"));
+        expect(row['TEST_DATE'].toString(), equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
+  });
 }

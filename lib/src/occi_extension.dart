@@ -178,6 +178,16 @@ class ResultSet {
   dynamic getRowID() native 'OracleResultSet_getRowID';
 
   bool next(int numberOfRows) native 'OracleResultSet_next';
+
+  Map<String, dynamic> row(){
+    Map<String, dynamic> map = new Map<String, dynamic>();
+    List<ColumnMetadata> metadata = getColumnListMetadata();
+    for(var x = 0; x < metadata.length; x++){
+      map[metadata[x].getName()] = get(x+1);
+    }
+    return map;
+  }
+
 }
 
 class BFile {
