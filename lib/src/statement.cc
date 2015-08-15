@@ -113,6 +113,20 @@ void OracleStatement_setBlob(Dart_NativeArguments args) {
     Dart_ExitScope();
 }
 
+void OracleStatement_setClob(Dart_NativeArguments args) {
+    Dart_EnterScope();
+
+    auto statement = getThis<occi::Statement>(args);
+    int64_t index = getDartArg<int64_t>(args, 1);
+    auto blob = getPeer<occi::Clob>(args, 2);
+
+    try {
+        statement->setClob(index, *blob);
+    } CATCH_SQL_EXCEPTION
+
+    Dart_ExitScope();
+}
+
 void OracleStatement_setBytes(Dart_NativeArguments args) {
 
 }
@@ -123,11 +137,17 @@ void OracleStatement_setString(Dart_NativeArguments args) {
     auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
 
     int64_t index = getDartArg<int64_t>(args, 1);
-    auto val = getDartArg<std::string>(args, 2);
+    if(nullArg(args,2)){
+        try{
+            statement->setNull(index, occi::OCCISTRING);
+        } CATCH_SQL_EXCEPTION
+    }else{
+        auto val = getDartArg<std::string>(args, 2);
 
-    try {
-        statement->setString(index, val);
-    } CATCH_SQL_EXCEPTION
+        try {
+            statement->setString(index, val);
+        } CATCH_SQL_EXCEPTION
+    }
 
     Dart_ExitScope();
 }
@@ -142,12 +162,18 @@ void OracleStatement_setInt(Dart_NativeArguments args) {
     auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
 
     int64_t index = getDartArg<int64_t>(args, 1);
-    auto val = getDartArg<int64_t>(args, 2);
 
-    try {
-        statement->setInt(index, val);
-    } CATCH_SQL_EXCEPTION
+    if(nullArg(args,2)){
+        try{
+            statement->setNull(index, occi::OCCIINT);
+        } CATCH_SQL_EXCEPTION
+    }else{
+        auto val = getDartArg<int64_t>(args, 2);
 
+        try {
+            statement->setInt(index, val);
+        } CATCH_SQL_EXCEPTION
+    }
     Dart_ExitScope();
 }
 
@@ -156,11 +182,17 @@ void OracleStatement_setDouble(Dart_NativeArguments args) {
 
     auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
     int64_t index = getDartArg<int64_t>(args, 1);
-    auto val = getDartArg<double>(args, 2);
+    if(nullArg(args,2)){
+        try{
+            statement->setNull(index, occi::OCCIDOUBLE);
+        } CATCH_SQL_EXCEPTION
+    }else{
+        auto val = getDartArg<double>(args, 2);
 
-    try {
-        statement->setDouble(index, val);
-    } CATCH_SQL_EXCEPTION
+        try {
+            statement->setDouble(index, val);
+        } CATCH_SQL_EXCEPTION
+    }
 
     Dart_ExitScope();
 }
@@ -170,30 +202,36 @@ void OracleStatement_setDate(Dart_NativeArguments args) {
 
     auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
     int64_t index = getDartArg<int64_t>(args, 1);
-    auto dartdate = getDartArg<Dart_Handle>(args, 2);
+    if(nullArg(args,2)){
+        try{
+            statement->setNull(index, occi::OCCIDATE);
+        } CATCH_SQL_EXCEPTION
+    }else{
+        auto dartdate = getDartArg<Dart_Handle>(args, 2);
 
-    int64_t year;
-    int64_t month;
-    int64_t day;
-    int64_t hour;
-    int64_t minute;
-    int64_t second;
+        int64_t year;
+        int64_t month;
+        int64_t day;
+        int64_t hour;
+        int64_t minute;
+        int64_t second;
 
-    HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("year")), &year));
-    HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("month")), &month));
-    HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("day")), &day));
-    HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("hour")), &hour));
-    HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("minute")), &minute));
-    HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("second")), &second));
+        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("year")), &year));
+        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("month")), &month));
+        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("day")), &day));
+        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("hour")), &hour));
+        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("minute")), &minute));
+        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("second")), &second));
 
-    try {
-        //TODO: need to watch that this use of a different environment doesnt cause problems
-        //also the environment is destroyed afterwards to prevent leakage. Trivial tests work, has the environment just not overwritten at this time?
-        auto env = occi::Environment::createEnvironment();
-        occi::Date odate(env, year, month, day, hour, minute, second);
-        statement->setDate(index, odate);
-        occi::Environment::terminateEnvironment(env);
-    } CATCH_SQL_EXCEPTION
+        try {
+            //TODO: need to watch that this use of a different environment doesnt cause problems
+            //also the environment is destroyed afterwards to prevent leakage. Trivial tests work, has the environment just not overwritten at this time?
+            auto env = occi::Environment::createEnvironment();
+            occi::Date odate(env, year, month, day, hour, minute, second);
+            statement->setDate(index, odate);
+            occi::Environment::terminateEnvironment(env);
+        } CATCH_SQL_EXCEPTION
+    }
 
     Dart_ExitScope();
 }

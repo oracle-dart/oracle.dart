@@ -75,6 +75,11 @@ void OracleResultSet_getBlob(Dart_NativeArguments args) {
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
+        if(rs->isNull(index)){
+            Dart_SetReturnValue(args, Dart_Null());
+            Dart_ExitScope();
+            return;
+        }
         occi::Blob blob = rs->getBlob(index);
         occi::Blob* heapblob = new occi::Blob(blob);
 
@@ -93,6 +98,11 @@ void OracleResultSet_getClob(Dart_NativeArguments args) {
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
+        if(rs->isNull(index)){
+            Dart_SetReturnValue(args, Dart_Null());
+            Dart_ExitScope();
+            return;
+        }
         occi::Clob clob = rs->getClob(index);
         occi::Clob* heapclob = new occi::Clob(clob);
 
@@ -115,6 +125,11 @@ void OracleResultSet_getString(Dart_NativeArguments args) {
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
+        if(rs->isNull(index)){
+            Dart_SetReturnValue(args, Dart_Null());
+            Dart_ExitScope();
+            return;
+        }
         std::string s = rs->getString(index);
         Dart_Handle dh = HandleError(Dart_NewStringFromCString(s.c_str()));
 
@@ -172,6 +187,11 @@ void OracleResultSet_getDate(Dart_NativeArguments args) {
 
     occi::Date date;
     try {
+        if(rs->isNull(index)){
+            Dart_SetReturnValue(args, Dart_Null());
+            Dart_ExitScope();
+            return;
+        }
         date = rs->getDate(index);
     } CATCH_SQL_EXCEPTION
 

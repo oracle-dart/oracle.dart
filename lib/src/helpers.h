@@ -23,6 +23,8 @@ Dart_Handle HandleError(Dart_Handle handle);
 
 Dart_Handle NewInstanceWithPeer(const char *class_name, void *peer);
 
+bool nullArg(Dart_NativeArguments args, int index);
+
 template<typename T>
 T* getPeer(Dart_NativeArguments args, int index){
     T* p;

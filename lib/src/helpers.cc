@@ -47,6 +47,11 @@ Dart_Handle HandleError(Dart_Handle handle) {
     return handle;
 }
 
+bool nullArg(Dart_NativeArguments args, int index){
+    Dart_Handle dh = HandleError(Dart_GetNativeArgument(args, index));
+    return Dart_IsNull(dh);
+}
+
 template<>
 std::string getDartArg<std::string>(Dart_NativeArguments args, int index){
     Dart_Handle stringhandle = HandleError(Dart_GetNativeArgument(args, index));
