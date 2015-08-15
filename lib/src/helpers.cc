@@ -91,14 +91,31 @@ Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
 }
 
 oracle::occi::Timestamp NewOracleTimestampFromDateTime(Dart_Handle dateTime) {
-    oracle::occi::Timestamp ts;
+    auto env = oracle::occi::Environment::createEnvironment();
+    oracle::occi::Timestamp ts(env);
+
     if (Dart_IsNull(dateTime)) {
         ts.setNull();
+        oracle::occi::Environment::terminateEnvironment(env); 
         return ts;
     }
 
+    int64_t year, month, day, hour, minute, second, fs;
 
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("year")), &year));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("month")), &month));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("day")), &day));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("hour")), &hour));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("minute")), &minute));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("second")), &second));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("millisecond")), &fs));
 
+    fs = fs * OCCI_FS_MS_RATIO;
+
+    ts.setDate(year, month, day);
+    ts.setTime(hour, minute, second, fs);
+
+    oracle::occi::Environment::terminateEnvironment(env); 
     return ts; 
 }
 

@@ -24,6 +24,7 @@ Dart_Handle HandleError(Dart_Handle handle);
 Dart_Handle NewInstanceWithPeer(const char *class_name, void *peer);
 
 Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts);
+oracle::occi::Timestamp NewOracleTimestampFromDateTime(Dart_Handle dateTime);
 
 template<typename T>
 T* getPeer(Dart_NativeArguments args, int index){

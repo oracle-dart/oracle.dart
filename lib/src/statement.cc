@@ -199,5 +199,15 @@ void OracleStatement_setDate(Dart_NativeArguments args) {
 }
 
 void OracleStatement_setTimestamp(Dart_NativeArguments args) {
+    Dart_EnterScope();
 
+    auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
+    int64_t index = getDartArg<int64_t>(args, 1);
+    auto val = getDartArg<Dart_Handle>(args, 2);
+
+    try {
+        statement->setTimestamp(index, NewOracleTimestampFromDateTime(val));
+    } CATCH_SQL_EXCEPTION
+
+    Dart_ExitScope();
 }

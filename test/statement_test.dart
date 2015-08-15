@@ -21,7 +21,15 @@ main() {
                  END;""");
 
     conn.execute("""CREATE TABLE stmt_test
-                 (ID int)""");
+                (test_int int,
+                 test_string varchar(255),
+                 test_date DATE,
+                 test_blob BLOB,
+                 test_number NUMBER,
+                 test_ts TIMESTAMP,
+                 test_tstz TIMESTAMP WITH TIME ZONE)""");
+    
+    conn.execute("ALTER SESSION SET time_zone = 'UTC'");
 
     return conn;
   });
@@ -47,12 +55,24 @@ main() {
     });
 
     test('executeQuery', () {
-      conn.execute('INSERT INTO stmt_test (id) VALUES (1)');
+      conn.execute('INSERT INTO stmt_test (test_int) VALUES (1)');
 
-      var stmt = conn.createStatement('SELECT * FROM stmt_test');
+      var stmt = conn.createStatement('SELECT test_int FROM stmt_test');
       var results = stmt.executeQuery();
       results.next(1);
       expect(results.getInt(1), equals(1));
+    });
+
+    test('setTimestamp', () {
+      var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
+      var dt = new DateTime.utc(1988, 11, 7, 1, 2, 3, 5);
+      stmt.setTimestamp(1, dt);
+      stmt.execute();
+
+      var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')
+        ..next(1);
+
+      expect(rs.getTimestamp(1), dt);
     });
   });
 
