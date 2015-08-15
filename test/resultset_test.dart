@@ -63,12 +63,15 @@ main() {
   }
 
   setUp(() {
-    username = Platform.environment['DB_USERNAME'];
-    password = Platform.environment['DB_PASSWORD'];
-    connString = Platform.environment['DB_CONN_STR'];
-    
-    env = new oracle.Environment();
-    con = env.createConnection(username, password, connString);
+    if (con == null) {
+      username = Platform.environment['DB_USERNAME'];
+      password = Platform.environment['DB_PASSWORD'];
+      connString = Platform.environment['DB_CONN_STR'];
+
+      env = new oracle.Environment();
+      con = env.createConnection(username, password, connString);
+    }
+
     var stmt = con.createStatement("BEGIN EXECUTE IMMEDIATE 'DROP TABLE resultset_test'; EXCEPTION WHEN OTHERS THEN NULL; END;");
     stmt.execute();
     con.commit();

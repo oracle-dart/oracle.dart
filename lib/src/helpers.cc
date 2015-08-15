@@ -7,6 +7,9 @@
 #include <occi.h>
 namespace occi = oracle::occi;
 
+// Ratio between OCI "fractional seconds" (nanoseconds) to milliseconds
+const uint64_t OCCI_FS_MS_RATIO = 1E6;
+
 Dart_Handle GetDartLibrary(const char* libName) {
     Dart_Handle libraryUrl = HandleError(Dart_NewStringFromCString(libName));
     Dart_Handle library = HandleError(Dart_LookupLibrary(libraryUrl));
@@ -57,7 +60,7 @@ Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
         Dart_NewInteger(hour),
         Dart_NewInteger(minute),
         Dart_NewInteger(second),
-        Dart_NewInteger(fs / 1E6) // assuming fractional seconds are nanoseconds
+        Dart_NewInteger(fs / OCCI_FS_MS_RATIO)
     };
 
     Dart_Handle dt = HandleError(Dart_New(dtType,
@@ -74,7 +77,7 @@ Dart_Handle NewDateTimeFromOracleTimestamp(oracle::occi::Timestamp ts) {
         Dart_NewInteger(tzOffsetMinute)
     };
 
-    Dart_Handle microseconds = HandleError(Dart_NewInteger(((tzOffsetHour * 60) + tzOffsetMinute) * 60 * 1e6));
+    Dart_Handle microseconds = HandleError(Dart_NewInteger(((tzOffsetHour * 60) + tzOffsetMinute) * 60 * OCCI_FS_MS_RATIO));
 
     Dart_Handle duration = HandleError(Dart_New(durType,
                                                 Dart_NewStringFromCString("_microseconds"),
@@ -93,6 +96,8 @@ oracle::occi::Timestamp NewOracleTimestampFromDateTime(Dart_Handle dateTime) {
         ts.setNull();
         return ts;
     }
+
+
 
     return ts; 
 }
