@@ -39,12 +39,12 @@ Support for:
 - Date and Timestamps as Dart `DateTime` type
 - BLOBs
 - CLOBs
-- BFiles
+- BFiles (coming soon)
 
 ## License
 Free as in freedom softwares.
 
-LGPL v3. See COPYING and COPYING.LESSER.
+LGPL v3. See LICENSE.
 
 ## Usage
 
