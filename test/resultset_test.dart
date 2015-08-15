@@ -72,7 +72,14 @@ main() {
     var stmt = con.createStatement("BEGIN EXECUTE IMMEDIATE 'DROP TABLE resultset_test'; EXCEPTION WHEN OTHERS THEN NULL; END;");
     stmt.execute();
     con.commit();
-    stmt = con.createStatement("CREATE TABLE resultset_test ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_number NUMBER, test_ts TIMESTAMP)");
+    stmt = con.createStatement("""CREATE TABLE resultset_test
+                               (test_int int,
+                                 test_string varchar(255),
+                                 test_date DATE,
+                                 test_blob BLOB,
+                                 test_number NUMBER,
+                                 test_ts TIMESTAMP,
+                                 test_tstz TIMESTAMP WITH TIME ZONE)""");
     stmt.execute();
     con.commit();
    
@@ -151,6 +158,35 @@ main() {
         con.execute("INSERT INTO resultset_test (test_ts) "
                     "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
         var rs = con.executeQuery('SELECT test_ts from resultset_test');
+        rs.next(1);
+
+        // expected time should be 8 hours behind
+        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
+      });
+      
+      test('with TIMESTAMP WITH TIME ZONE (UTC)', () {
+        con.execute("INSERT INTO resultset_test (test_tstz) "
+                    "VALUES (to_timestamp_tz('1988-11-07 01:02:03 +0:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
+        var rs = con.executeQuery('SELECT test_tstz from resultset_test');
+        rs.next(1);
+
+        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
+      });
+
+      test('with TIMESTAMP WITH TIME ZONE (EST/GMT-5)', () {
+        con.execute("INSERT INTO resultset_test (test_tstz) "
+                    "VALUES (to_timestamp_tz('1988-11-07 05:02:03 -5:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
+        var rs = con.executeQuery('SELECT test_tstz from resultset_test');
+        rs.next(1);
+
+        // expected time should be 5 hours ahead
+        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
+      });
+
+      test('with TIMESTAMP WITH TIME ZONE (PRC/UTC+8)', () {
+        con.execute("INSERT INTO resultset_test (test_tstz) "
+                    "VALUES (to_timestamp_tz('1988-11-07 05:02:03 +8:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
+        var rs = con.executeQuery('SELECT test_tstz from resultset_test');
         rs.next(1);
 
         // expected time should be 8 hours behind
