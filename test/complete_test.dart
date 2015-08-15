@@ -128,4 +128,12 @@ main() {
     expect(results.getBlob(4), equals(null));
     expect(results.getClob(5), equals(null));
   });
+  test('test get', (){
+        var stmt = con.createStatement("SELECT * FROM test_table");
+        var results = stmt.executeQuery();
+        results.next(1);
+        expect(results.get(1), equals(34));
+        expect(results.get(2), equals("hello world"));
+        expect(results.get(3).toString(), equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
+  });
 }

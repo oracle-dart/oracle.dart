@@ -143,6 +143,24 @@ class ResultSet {
 
   Clob getClob(int index) native 'OracleResultSet_getClob';
 
+  dynamic get(int index){
+    var md = getColumnListMetadata();
+    var x = md[index-1].getDataType();
+    switch(x){
+      case DataType.CHR:
+        return getString(index);
+      case DataType.NUM:
+        return getNum(index);
+      case DataType.BLOB:
+        return getBlob(index);
+      case DataType.CLOB:
+        return getClob(index);
+      case DataType.DAT:
+        return getDate(index);
+    }
+    return null;
+  }
+
   List<int> getBytes(int index) native 'OracleResultSet_getBytes';
 
   String getString(int index) native 'OracleResultSet_getString';
