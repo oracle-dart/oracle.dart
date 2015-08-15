@@ -4,6 +4,7 @@
 library oracle.src.occi_extension;
 
 import 'dart-ext:occi_extension';
+import 'dart:convert';
 
 class Environment {
   Environment() {
@@ -212,9 +213,21 @@ class Clob {
 
   void trim(int length) native 'OracleClob_trim';
 
-  List<int> read(int amount, int offset) native 'OracleClob_read';
+  String read(int amount, int offset) {
+      List<int> li = _read_helper(amount, offset);
+      return UTF8.decode(li);
+  }
+  
+  List<int> _read_helper(int amount, int offset) native 'OracleClob_read';
 
-  int write(int amount, List<int> buffer, int offset) native 'OracleClob_write';
+  int write(int amount, String str, int offset) {
+
+      List<int> li = UTF8.encode(str);
+
+      return _write_helper(amount, li, offset);
+  }
+      
+  int _write_helper(int amount, List<int> buffer, int offset) native 'OracleClob_write';
 }
 
 class DataType {

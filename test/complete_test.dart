@@ -62,11 +62,10 @@ main() {
     results = stmt.executeQuery();
     results.next(1);
     var dbblob = results.getClob(1);
-    print(dbblob.length());
     expect(dbblob.length(), equals(10));
     var rlist = dbblob.read(10,1);
     expect(rlist, equals("teststring"));
-  }, skip: 'clobs not yet implemented');
+  });
 
   test('test Blob(Connection)', () {
     new oracle.Blob(con);
