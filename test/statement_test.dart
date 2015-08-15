@@ -3,17 +3,31 @@ import 'package:oracle/oracle.dart' as oracle;
 import 'package:test/test.dart';
 
 main() {
+  var username;
+  var password;
+  var connString;
   var conn;
 
   setUp(() {
     if (conn == null) {
-      username = Platform.environment['DB_USERNAME'];
-      password = Platform.environment['DB_PASSWORD'];
-      connString = Platform.environment['DB_CONN_STR'];
-      conn = new Connection(username, password, connString);
+       username = Platform.environment['DB_USERNAME'];
+       password = Platform.environment['DB_PASSWORD'];
+       connString = Platform.environment['DB_CONN_STR'];
+      conn = new oracle.Connection(username, password, connString);
     }
 
+    conn.execute("""BEGIN EXECUTE IMMEDIATE 'DROP TABLE stmt_test';
+                 EXCEPTION WHEN OTHERS THEN NULL;
+                 END;""");
+
+    conn.execute("""CREATE TABLE stmt_test
+                 (ID int)""");
+
     return conn;
+  });
+  
+  tearDown((){
+    conn.execute("DROP TABLE stmt_test");
   });
 
   group('Statement', () {
@@ -33,30 +47,12 @@ main() {
     });
 
     test('executeQuery', () {
-      var sql = 'SELECT * FROM test';
-      var stmt = conn.createStatement(sql);
+      conn.execute('INSERT INTO stmt_test (id) VALUES (1)');
+
+      var stmt = conn.createStatement('SELECT * FROM stmt_test');
       var results = stmt.executeQuery();
       results.next(1);
-      expect(results.getNum(1), equals(1));
-    });
-
-    test('statement execute commit', () {
-      var sql = 'UPDATE test set ID=:bind';
-      var sql2 = 'SELECT * FROM test';
-      var stmt = conn.createStatement(sql);
-      var stmt2 = conn.createStatement(sql2);
-      stmt.setInt(1, 2);
-      stmt.execute();
-      conn.commit();
-      var results = stmt2.executeQuery();
-      results.next(1);
-      expect(results.getNum(1), equals(2));
-      stmt.setInt(1, 1);
-      stmt.execute();
-      conn.commit();
-      results = stmt2.executeQuery();
-      results.next(1);
-      expect(results.getNum(1), equals(1));
+      expect(results.getInt(1), equals(1));
     });
   });
 
