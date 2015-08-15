@@ -80,7 +80,8 @@ Being developed.
 # Set environment variables
 $ export DART_SDK=/path/to/dart-sdk
 $ export PATH=$PATH:$DART_SDK/bin
-$ export ORACLE_HOME=/usr/lib/oracle/12.1/client64/lib
+$ export ORACLE_INCLUDE=/usr/include/oracle/12.1/client64
+$ export ORACLE_LIB=/usr/lib/oracle/12.1/client64/lib
 
 # Get dependencies and setup grinder
 $ cd oracle.dart
