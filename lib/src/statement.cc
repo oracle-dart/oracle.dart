@@ -202,6 +202,7 @@ void OracleStatement_setDate(Dart_NativeArguments args) {
 
     auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
     int64_t index = getDartArg<int64_t>(args, 1);
+
     if(nullArg(args,2)){
         try{
             statement->setNull(index, occi::OCCIDATE);
@@ -209,27 +210,8 @@ void OracleStatement_setDate(Dart_NativeArguments args) {
     }else{
         auto dartdate = getDartArg<Dart_Handle>(args, 2);
 
-        int64_t year;
-        int64_t month;
-        int64_t day;
-        int64_t hour;
-        int64_t minute;
-        int64_t second;
-
-        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("year")), &year));
-        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("month")), &month));
-        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("day")), &day));
-        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("hour")), &hour));
-        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("minute")), &minute));
-        HandleError(Dart_IntegerToInt64(Dart_GetField(dartdate, Dart_NewStringFromCString("second")), &second));
-
         try {
-            //TODO: need to watch that this use of a different environment doesnt cause problems
-            //also the environment is destroyed afterwards to prevent leakage. Trivial tests work, has the environment just not overwritten at this time?
-            auto env = occi::Environment::createEnvironment();
-            occi::Date odate(env, year, month, day, hour, minute, second);
-            statement->setDate(index, odate);
-            occi::Environment::terminateEnvironment(env);
+            statement->setDate(index, NewOracleDateFromDateTime(dartdate));
         } CATCH_SQL_EXCEPTION
     }
 

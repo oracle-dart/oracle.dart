@@ -178,7 +178,6 @@ void OracleResultSet_getNum(Dart_NativeArguments args) {
     OracleResultSet_getDouble(args);
 }
 
-//TODO add support for timezones
 void OracleResultSet_getDate(Dart_NativeArguments args) {
     Dart_EnterScope();
 
@@ -195,27 +194,7 @@ void OracleResultSet_getDate(Dart_NativeArguments args) {
         date = rs->getDate(index);
     } CATCH_SQL_EXCEPTION
 
-    int year;
-    unsigned int month;
-    unsigned int day;
-    unsigned int hour;
-    unsigned int min;
-    unsigned int seconds;
-    date.getDate(year, month, day, hour, min, seconds);
-
-    std::vector<Dart_Handle> dargs;
-    dargs.push_back(Dart_NewInteger(year));
-    dargs.push_back(Dart_NewInteger(month));
-    dargs.push_back(Dart_NewInteger(day));
-    dargs.push_back(Dart_NewInteger(hour));
-    dargs.push_back(Dart_NewInteger(min));
-    dargs.push_back(Dart_NewInteger(seconds));
-
-    Dart_Handle lib = GetDartLibrary("dart:core");
-    Dart_Handle type = HandleError(Dart_GetType(lib, Dart_NewStringFromCString("DateTime"), 0, NULL));
-    Dart_Handle obj = HandleError(Dart_New(type, Dart_Null(), 6, &dargs[0]));
-
-    Dart_SetReturnValue(args, obj);
+    Dart_SetReturnValue(args, NewDateTimeFromOracleDate(date));
     Dart_ExitScope();
 }
 

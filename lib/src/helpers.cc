@@ -130,6 +130,60 @@ oracle::occi::Timestamp NewOracleTimestampFromDateTime(Dart_Handle dateTime) {
     return ts; 
 }
 
+Dart_Handle NewDateTimeFromOracleDate(oracle::occi::Date date) {
+    if (date.isNull()) {
+        return Dart_Null();
+    }
+    
+    int year;
+    unsigned int month;
+    unsigned int day;
+    unsigned int hour;
+    unsigned int min;
+    unsigned int seconds;
+    date.getDate(year, month, day, hour, min, seconds);
+
+    std::vector<Dart_Handle> dargs = {
+        Dart_NewInteger(year),
+        Dart_NewInteger(month),
+        Dart_NewInteger(day),
+        Dart_NewInteger(hour),
+        Dart_NewInteger(min),
+        Dart_NewInteger(seconds),
+    };
+
+    Dart_Handle lib = GetDartLibrary("dart:core");
+    Dart_Handle type = HandleError(Dart_GetType(lib, Dart_NewStringFromCString("DateTime"), 0, NULL));
+    
+    return HandleError(Dart_New(type, Dart_Null(), 6, &dargs[0]));
+}
+
+oracle::occi::Date NewOracleDateFromDateTime(Dart_Handle dateTime) {
+    if (Dart_IsNull(dateTime)) {
+        return oracle::occi::Date();
+    }
+
+    int64_t year;
+    int64_t month;
+    int64_t day;
+    int64_t hour;
+    int64_t minute;
+    int64_t second;
+
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("year")), &year));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("month")), &month));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("day")), &day));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("hour")), &hour));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("minute")), &minute));
+    HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("second")), &second));
+
+    auto env = oracle::occi::Environment::createEnvironment();
+    oracle::occi::Date date(env, year, month, day, hour, minute, second);
+
+    oracle::occi::Environment::terminateEnvironment(env);
+    return date;
+}
+
 
 void printDartToString(Dart_Handle dh) {
     char *tostr;
