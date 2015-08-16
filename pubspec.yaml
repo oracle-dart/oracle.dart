@@ -4,3 +4,4 @@ dependencies:
   grinder: any
   logging: any
   test: any
+  dart_coveralls: any

@@ -2,7 +2,7 @@
 
 
 CC := clang
-CFLAGS = -std=c++11 -Wall -fPIC
+CFLAGS = -std=c++11 -Wall -fPIC --coverage
 
 SRC_DIR=$(CURDIR)/lib/src
 TARGETS=$(wildcard $(SRC_DIR)/*.cc)
