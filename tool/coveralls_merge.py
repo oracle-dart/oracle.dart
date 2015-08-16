@@ -35,19 +35,29 @@ def get_json_from_file(fpath):
         return json.load(fp)
 
 def main():
+    if len(sys.argv) == 1:
+        print("Usage: {0} <file1> <file2> <outfile>")
+        return
+
     out = {}
     out['source_files'] = []
 
     sources = []
 
-    for f in sys.argv[1:]:
+    for f in sys.argv[1:-1]:
         assert os.path.isfile(f)
         sources.append(get_json_from_file(f))
 
     for s in sources:
+        for key in ['git', 'branch', 'remotes']:
+            if key in s:
+                out[key] = s[key]
+
         merge_source_files(out['source_files'], s['source_files'])
 
-    print(json.dumps(out))
+    
+    with open(sys.argv[-1], 'wb') as fp:
+        json.dump(out, fp)
 
 if __name__ == '__main__':
     main()
