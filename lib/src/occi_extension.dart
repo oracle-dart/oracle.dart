@@ -123,8 +123,16 @@ class Statement {
 
   void setDouble(int index, double daable) native 'OracleStatement_setDouble';
 
+  // Set a DATE column
+  //
+  // Note: Because Oracle's DATE type does not support timezones
+  // The timezone information of the given [date] is ignored
   void setDate(int index, DateTime date) native 'OracleStatement_setDate';
 
+  // Set a TIMESTAMP column
+  //
+  // Note: Because Oracle's TIMESTAMP type is timezone-aware,
+  // the timezone of the [timestamp] is used.
   void setTimestamp(
       int index, DateTime timestamp) native 'OracleStatement_setTimestamp';
 }
@@ -171,8 +179,17 @@ class ResultSet {
 
   double getDouble(int index) native 'OracleResultSet_getDouble';
 
+  // Get a [DateTime] at a given [index]
+  //
+  // Note: This method will return a [DateTime] with the local timezone
+  // **without** performing any timezone offset calculation
   DateTime getDate(int index) native 'OracleResultSet_getDate';
 
+
+  // Get a [DateTime] at a given [index]
+  //
+  // Note: This method will return a [new DateTime.utc]. If timezone information
+  // is provided by Oracle, the UTC offset will be used.
   DateTime getTimestamp(int index) native 'OracleResultSet_getTimestamp';
 
   dynamic getRowID() native 'OracleResultSet_getRowID';
