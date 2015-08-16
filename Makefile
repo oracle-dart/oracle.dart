@@ -39,4 +39,5 @@ all: $(OBJECTS)
 		$< -o $@
 
 clean:
-	rm $(SRC_DIR)/*.o
+	rm -f $(SRC_DIR)/*.o
+	rm -f $(SRC_DIR)/*.so
