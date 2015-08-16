@@ -109,11 +109,22 @@ oracle::occi::Timestamp NewOracleTimestampFromDateTime(Dart_Handle dateTime) {
     HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("minute")), &minute));
     HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("second")), &second));
     HandleError(Dart_IntegerToInt64(Dart_GetField(dateTime, Dart_NewStringFromCString("millisecond")), &fs));
+    
+
+    Dart_Handle tzOffset = HandleError(Dart_GetField(dateTime,
+                                                   Dart_NewStringFromCString("timeZoneOffset")));
+
+    int64_t tzOffsetInMinutes;
+    HandleError(Dart_IntegerToInt64(Dart_GetField(tzOffset, Dart_NewStringFromCString("inMinutes")), &tzOffsetInMinutes));
+
+    int64_t tzOffsetHours = tzOffsetInMinutes / 60;
+    int64_t tzOffsetMinutes = tzOffsetInMinutes % 60;
 
     fs = fs * OCCI_FS_MS_RATIO;
 
     ts.setDate(year, month, day);
     ts.setTime(hour, minute, second, fs);
+    ts.setTimeZoneOffset(tzOffsetHours, tzOffsetMinutes);
 
     oracle::occi::Environment::terminateEnvironment(env); 
     return ts; 
