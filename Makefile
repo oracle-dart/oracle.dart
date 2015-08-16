@@ -1,8 +1,12 @@
 .PHONY: all check-env clean
 
-
 CC := clang
-CFLAGS = -std=c++11 -Wall -fPIC --coverage
+CFLAGS = -std=c++11 -Wall -fPIC
+
+ifdef COVERAGE
+	CC = gcc
+	CFLAGS += --coverage
+endif
 
 SRC_DIR=$(CURDIR)/lib/src
 TARGETS=$(wildcard $(SRC_DIR)/*.cc)
