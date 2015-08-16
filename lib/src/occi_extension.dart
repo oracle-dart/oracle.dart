@@ -4,6 +4,7 @@
 library oracle.src.occi_extension;
 
 import 'dart-ext:occi_extension';
+import 'dart:convert';
 
 class Environment {
   Environment() {
@@ -142,6 +143,24 @@ class ResultSet {
 
   Clob getClob(int index) native 'OracleResultSet_getClob';
 
+  dynamic get(int index){
+    var md = getColumnListMetadata();
+    var x = md[index-1].getDataType();
+    switch(x){
+      case DataType.CHR:
+        return getString(index);
+      case DataType.NUM:
+        return getNum(index);
+      case DataType.BLOB:
+        return getBlob(index);
+      case DataType.CLOB:
+        return getClob(index);
+      case DataType.DAT:
+        return getDate(index);
+    }
+    return null;
+  }
+
   List<int> getBytes(int index) native 'OracleResultSet_getBytes';
 
   String getString(int index) native 'OracleResultSet_getString';
@@ -159,6 +178,16 @@ class ResultSet {
   dynamic getRowID() native 'OracleResultSet_getRowID';
 
   bool next(int numberOfRows) native 'OracleResultSet_next';
+
+  Map<String, dynamic> row(){
+    Map<String, dynamic> map = new Map<String, dynamic>();
+    List<ColumnMetadata> metadata = getColumnListMetadata();
+    for(var x = 0; x < metadata.length; x++){
+      map[metadata[x].getName()] = get(x+1);
+    }
+    return map;
+  }
+
 }
 
 class BFile {
@@ -212,9 +241,21 @@ class Clob {
 
   void trim(int length) native 'OracleClob_trim';
 
-  List<int> read(int amount, int offset) native 'OracleClob_read';
+  String read(int amount, int offset) {
+      List<int> li = _read_helper(amount, offset);
+      return UTF8.decode(li);
+  }
+  
+  List<int> _read_helper(int amount, int offset) native 'OracleClob_read';
 
-  int write(int amount, List<int> buffer, int offset) native 'OracleClob_write';
+  int write(int amount, String str, int offset) {
+
+      List<int> li = UTF8.encode(str);
+
+      return _write_helper(amount, li, offset);
+  }
+      
+  int _write_helper(int amount, List<int> buffer, int offset) native 'OracleClob_write';
 }
 
 class DataType {

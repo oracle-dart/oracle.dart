@@ -1,4 +1,7 @@
-# oracle: Oracle database access support for Dart
+# oracle
+
+[![Build Status](http://oracledart.cjlucas.net:8080/buildStatus/icon?job=oracle.dart)](http://oracledart.cjlucas.net:8080/job/oracle.dart/)
+
 Provides Oracle database access support for Dart via an API that is similar to
 OCCI.
 
@@ -29,19 +32,19 @@ If grind succeeds you should be good to go. If it fails you may need to check
 your system dependencies or environment variables
 
 ## Features
-Dart garbage collected OCCI wrappers for many commonly used classes. 
+Dart garbage collected OCCI wrappers for many commonly used classes.
 
 Support for:
 - Basic types (strings, numbers, etc...)
 - Date and Timestamps as Dart `DateTime` type
 - BLOBs
 - CLOBs
-- BFiles
+- BFiles (coming soon)
 
 ## License
 Free as in freedom softwares.
 
-LGPL v3. See COPYING and COPYING.LESSER.
+LGPL v3. See LICENSE.
 
 ## Usage
 
@@ -55,7 +58,7 @@ todo?
 import 'package:oracle/oracle.dart' as oracle;
 
 oracle.Environment env = new oracle.Environment();
-oracle.Connection conn = env.createConnection("username", "password", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.1.1)(PORT=1521))(CONNECT_DATA=(SID=XE)))"); 
+oracle.Connection conn = env.createConnection("username", "password", "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.1.1)(PORT=1521))(CONNECT_DATA=(SID=XE)))");
 oracle.Statement stmt = conn.createStatement("INSERT INTO test_table (test_int INT) VALUES (:bind)");
 stmt.setInt(1, 12);
 stmt.execute();
@@ -77,7 +80,8 @@ Being developed.
 # Set environment variables
 $ export DART_SDK=/path/to/dart-sdk
 $ export PATH=$PATH:$DART_SDK/bin
-$ export ORACLE_HOME=/usr/lib/oracle/12.1/client64/lib
+$ export ORACLE_INCLUDE=/usr/include/oracle/12.1/client64
+$ export ORACLE_LIB=/usr/lib/oracle/12.1/client64/lib
 
 # Get dependencies and setup grinder
 $ cd oracle.dart

@@ -224,5 +224,11 @@ main() {
         expect(md is oracle.ColumnMetadata, isTrue);
       }
     });
+
+    test('getString with NULL', () {
+      insertNulls();
+      expect(() => queryAll().getString(1), returnsNormally);
+      expect(queryAll().getString(1), isNull);
+    });
   });
 }

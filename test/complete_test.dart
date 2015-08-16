@@ -62,11 +62,10 @@ main() {
     results = stmt.executeQuery();
     results.next(1);
     var dbblob = results.getClob(1);
-    print(dbblob.length());
     expect(dbblob.length(), equals(10));
     var rlist = dbblob.read(10,1);
     expect(rlist, equals("teststring"));
-  }, skip: 'clobs not yet implemented');
+  });
 
   test('test Blob(Connection)', () {
     new oracle.Blob(con);
@@ -110,6 +109,40 @@ main() {
     results = stmt2.executeQuery();
     results.next(1);
     expect(results.getNum(1), equals(1));
-
+  });
+  test('test insert nulls', (){
+    var sql = 'UPDATE test_table set test_int=:b1, test_string=:b2, test_date=:b3, test_blob=null, test_clob=null';
+    var sql2 = 'SELECT * FROM test_table';
+    var stmt = con.createStatement(sql);
+    var stmt2 = con.createStatement(sql2);
+    stmt.setInt(1, null);
+    stmt.setString(2, null);
+    stmt.setDate(3, null);
+    stmt.execute();
+    con.commit();
+    var results = stmt2.executeQuery();
+    results.next(1);
+    expect(results.getNum(1), equals(null));
+    expect(results.getString(2), equals(null));
+    expect(results.getDate(3), equals(null));
+    expect(results.getBlob(4), equals(null));
+    expect(results.getClob(5), equals(null));
+  });
+  test('test get', (){
+        var stmt = con.createStatement("SELECT * FROM test_table");
+        var results = stmt.executeQuery();
+        results.next(1);
+        expect(results.get(1), equals(34));
+        expect(results.get(2), equals("hello world"));
+        expect(results.get(3).toString(), equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
+  });
+  test('test row', (){
+        var stmt = con.createStatement("SELECT * FROM test_table");
+        var results = stmt.executeQuery();
+        results.next(1);
+        var row = results.row();
+        expect(row['TEST_INT'], equals(34));
+        expect(row['TEST_STRING'], equals("hello world"));
+        expect(row['TEST_DATE'].toString(), equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
   });
 }
