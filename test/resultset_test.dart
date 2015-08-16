@@ -213,6 +213,25 @@ main() {
       });
     });
 
+    group('.getDate', () {
+      test('with DATE', () {
+        con.execute("""INSERT INTO resultset_test (test_date) VALUES
+                    (to_date('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'))""");
+
+        var rs = con.executeQuery('SELECT test_date FROM resultset_test')
+          ..next(1);
+
+        expect(rs.getDate(1), new DateTime(1988, 11, 7, 1, 2, 3));
+      });
+
+      test('with NULL', () {
+        insertNulls();
+        var f = () => queryAll().getDate(1);
+        expect(f, returnsNormally);
+        expect(f(), isNull);
+      });
+    });
+
     test('getColumnListMetadata', () {
       var f = () => con.executeQuery('SELECT test_int, test_string FROM resultset_test').getColumnListMetadata();
       expect(f, returnsNormally);

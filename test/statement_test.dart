@@ -10,9 +10,9 @@ main() {
 
   setUp(() {
     if (conn == null) {
-       username = Platform.environment['DB_USERNAME'];
-       password = Platform.environment['DB_PASSWORD'];
-       connString = Platform.environment['DB_CONN_STR'];
+      username = Platform.environment['DB_USERNAME'];
+      password = Platform.environment['DB_PASSWORD'];
+      connString = Platform.environment['DB_CONN_STR'];
       conn = new oracle.Connection(username, password, connString);
     }
 
@@ -20,20 +20,20 @@ main() {
                  EXCEPTION WHEN OTHERS THEN NULL;
                  END;""");
 
-    conn.execute("""CREATE TABLE stmt_test
-                (test_int int,
-                 test_string varchar(255),
-                 test_date DATE,
-                 test_blob BLOB,
-                 test_number NUMBER,
-                 test_ts TIMESTAMP,
-                 test_tstz TIMESTAMP WITH TIME ZONE)""");
-    
-    conn.execute("ALTER SESSION SET time_zone = 'UTC'");
+                 conn.execute("""CREATE TABLE stmt_test
+                              (test_int int,
+                               test_string varchar(255),
+                               test_date DATE,
+                               test_blob BLOB,
+                               test_number NUMBER,
+                               test_ts TIMESTAMP,
+                               test_tstz TIMESTAMP WITH TIME ZONE)""");
 
-    return conn;
+                 conn.execute("ALTER SESSION SET time_zone = 'UTC'");
+
+                 return conn;
   });
-  
+
   tearDown((){
     conn.execute("DROP TABLE stmt_test");
   });
@@ -63,27 +63,54 @@ main() {
       expect(results.getInt(1), equals(1));
     });
 
-    test('setTimestamp (UTC)', () {
-      var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
-      var dt = new DateTime.utc(1988, 11, 7, 1, 2, 3, 5);
-      stmt.setTimestamp(1, dt);
-      stmt.execute();
+    group('setTimestamp', () {
+      test('with UTC', () {
+        var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
+        var dt = new DateTime.utc(1988, 11, 7, 1, 2, 3, 5);
+        stmt.setTimestamp(1, dt);
+        stmt.execute();
 
-      var rs = conn.executeQuery("SELECT TO_CHAR(test_ts, 'YYYY-MM-DD HH:MI:SS.FF TZR') FROM stmt_test")
-        ..next(1);
+        var rs = conn.executeQuery("SELECT TO_CHAR(test_ts, 'YYYY-MM-DD HH:MI:SS.FF TZR') FROM stmt_test")
+          ..next(1);
 
-      expect(rs.getString(1), '1988-11-07 01:02:03.005000 +00:00');
+        expect(rs.getString(1), '1988-11-07 01:02:03.005000 +00:00');
+      });
+
+      test('with null', () {
+        var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
+        stmt.setTimestamp(1, null);
+        expect(() => stmt.execute(), returnsNormally);
+
+        var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')
+          ..next(1);
+
+        expect(rs.getTimestamp(1), null);
+      });
     });
-    
-    test('setTimestamp with null', () {
-      var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
-      stmt.setTimestamp(1, null);
-      expect(() => stmt.execute(), returnsNormally);
 
-      var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')
-        ..next(1);
+    group('setDate', () {
+      test('with DateTime', () {
+        var stmt = conn.createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
+        var dt = new DateTime.utc(1988, 11, 7, 1, 2, 3, 5);
+        stmt.setDate(1, dt);
+        stmt.execute();
 
-      expect(rs.getTimestamp(1), null);
+        var rs = conn.executeQuery("SELECT TO_CHAR(test_date, 'YYYY-MM-DD HH:MI:SS') FROM stmt_test")
+          ..next(1);
+
+        expect(rs.getString(1), '1988-11-07 01:02:03');
+      });
+      
+      test('with null', () {
+        var stmt = conn.createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
+        stmt.setDate(1, null);
+        stmt.execute();
+
+        var rs = conn.executeQuery("SELECT test_date FROM stmt_test")
+          ..next(1);
+
+        expect(rs.getDate(1), null);
+      });
     });
   });
 
