@@ -41,6 +41,11 @@ def main():
 
     out = {}
     out['source_files'] = []
+    out['repo_token'] = os.environ['COVERALLS_TOKEN']
+
+    if out['repo_token'] is None:
+        print("COVERALLS_TOKEN is not set")
+        sys.exit(1)
 
     sources = []
 
