@@ -166,7 +166,7 @@ class ResultSet {
       case DataType.DAT:
         return getDate(index);
     }
-    return null;
+    return getString(index);
   }
 
   List<int> getBytes(int index) native 'OracleResultSet_getBytes';
