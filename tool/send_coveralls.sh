@@ -11,4 +11,6 @@ done
 echo "Covering cpp"
 cpp-coveralls -b lib/src -t faketoken --dump coverage/cpp_coverage.json
 
-python tool/coveralls_merge.py coverage/* coverage/merged.json
+merged_json=coverage/merged.json
+python tool/coveralls_merge.py coverage/* $merged_json
+curl -v -F json_file=@$merged_json https://coveralls.io/api/v1/jobs

@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+#
+# merges multiple coverall json reports into one
+#
+
 import json
 import os
 import sys
@@ -53,6 +57,7 @@ def main():
         assert os.path.isfile(f)
         sources.append(get_json_from_file(f))
 
+    # pull git information
     for s in sources:
         for key in ['git', 'branch', 'remotes']:
             if key in s:
