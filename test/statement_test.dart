@@ -63,22 +63,22 @@ main() {
       expect(results.getInt(1), equals(1));
     });
 
-    test('setTimestamp', () {
+    test('setTimestamp (UTC)', () {
       var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
       var dt = new DateTime.utc(1988, 11, 7, 1, 2, 3, 5);
       stmt.setTimestamp(1, dt);
       stmt.execute();
 
-      var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')
+      var rs = conn.executeQuery("SELECT TO_CHAR(test_ts, 'YYYY-MM-DD HH:MI:SS.FF TZR') FROM stmt_test")
         ..next(1);
 
-      expect(rs.getTimestamp(1), dt);
+      expect(rs.getString(1), '1988-11-07 01:02:03.005000 +00:00');
     });
     
     test('setTimestamp with null', () {
       var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
       stmt.setTimestamp(1, null);
-      stmt.execute();
+      expect(() => stmt.execute(), returnsNormally);
 
       var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')
         ..next(1);
