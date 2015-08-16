@@ -63,6 +63,11 @@ main() {
       expect(results.getInt(1), equals(1));
     });
 
+    test('.executeUpdate', () {
+      var stmt = conn.createStatement('INSERT INTO stmt_test (test_int) VALUES (NULL)');
+      expect(stmt.executeUpdate(), 1);
+    });
+
     group('setTimestamp', () {
       test('with UTC', () {
         var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
