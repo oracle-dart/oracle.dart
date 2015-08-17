@@ -31,6 +31,9 @@ oracle::occi::Timestamp NewOracleTimestampFromDateTime(Dart_Handle dateTime);
 Dart_Handle NewDateTimeFromOracleDate(oracle::occi::Date date);
 oracle::occi::Date NewOracleDateFromDateTime(Dart_Handle dateTime);
 
+Dart_Handle NewByteDataFromOracleBytes(oracle::occi::Bytes bytes);
+oracle::occi::Bytes NewOracleBytesFromByteData(Dart_Handle byteData);
+
 template<typename T>
 T* getPeer(Dart_NativeArguments args, int index){
     T* p;
