@@ -1,6 +1,7 @@
 # oracle
 
 [![Build Status](http://oracledart.cjlucas.net:8080/buildStatus/icon?job=oracle.dart)](http://oracledart.cjlucas.net:8080/job/oracle.dart/)
+[![Coverage Status](https://coveralls.io/repos/oracle-dart/oracle.dart/badge.svg?branch=master&service=github)](https://coveralls.io/github/oracle-dart/oracle.dart?branch=master)
 
 Provides Oracle database access support for Dart via an API that is similar to
 OCCI.
