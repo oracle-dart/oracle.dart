@@ -51,6 +51,48 @@ main() {
     var rlist = dbblob.read(5,1);
     expect(rlist, equals(bloblist));
   });
+  test('test blob trim', () {
+    List<int> bloblist = [2, 4, 6, 8, 10];
+    var stmt = con.createStatement("SELECT test_blob FROM test_table FOR UPDATE");
+    var results = stmt.executeQuery();
+    results.next(1);
+    oracle.Blob bl = results.getBlob(1);
+    bl.write(5,bloblist,1);
+    con.commit();
+    results = stmt.executeQuery();
+    results.next(1);
+    bl = results.getBlob(1);
+    bl.trim(2);
+    con.commit();
+    stmt = con.createStatement("SELECT test_blob FROM test_table");
+    results = stmt.executeQuery();
+    results.next(1);
+    var dbblob = results.getBlob(1);
+    expect(dbblob.length(), equals(2));
+    var rlist = dbblob.read(2,1);
+    expect(rlist, equals([2,4]));
+  });
+  test('test blob append', () {
+    List<int> bloblist = [2, 4];
+    var stmt = con.createStatement("SELECT test_blob FROM test_table FOR UPDATE");
+    var results = stmt.executeQuery();
+    results.next(1);
+    oracle.Blob bl = results.getBlob(1);
+    bl.write(2,bloblist,1);
+    con.commit();
+    results = stmt.executeQuery();
+    results.next(1);
+    bl = results.getBlob(1);
+    oracle.Blob bl2 = results.getBlob(1);
+    bl.append(bl2);
+    stmt = con.createStatement("SELECT test_blob FROM test_table");
+    results = stmt.executeQuery();
+    results.next(1);
+    var dbblob = results.getBlob(1);
+    expect(dbblob.length(), equals(4));
+    var rlist = dbblob.read(4,1);
+    expect(rlist, equals([2,4,2,4]));
+  });
   test('test clob', (){
     var stmt = con.createStatement("SELECT test_clob FROM test_table FOR UPDATE");
     var results = stmt.executeQuery();
@@ -85,6 +127,26 @@ main() {
     expect(dbblob.length(), equals(4));
     var rlist = dbblob.read(4,1);
     expect(rlist, equals("test"));
+  });
+  test('test clob append', (){
+    var stmt = con.createStatement("SELECT test_clob FROM test_table FOR UPDATE");
+    var results = stmt.executeQuery();
+    results.next(1);
+    oracle.Clob cl = results.getClob(1);
+    cl.write(10,"teststring",1);
+    con.commit();
+    results = stmt.executeQuery();
+    results.next(1);
+    cl = results.getClob(1);
+    oracle.Clob cl2 = results.getClob(1);
+    cl.append(cl2);
+    stmt = con.createStatement("SELECT test_clob FROM test_table");
+    results = stmt.executeQuery();
+    results.next(1);
+    var dbblob = results.getClob(1);
+    expect(dbblob.length(), equals(20));
+    var rlist = dbblob.read(20,1);
+    expect(rlist, equals("teststringteststring"));
   });
 
   test('test Blob(Connection)', () {
