@@ -215,6 +215,19 @@ main() {
     results.next(1);
     expect(results.getNum(1), equals(1));
   });
+  test('test rollback', () {
+    var sql = 'UPDATE test_table set test_int=:bind';
+    var sql2 = 'SELECT * FROM test_table';
+    var stmt = con.createStatement(sql);
+    var stmt2 = con.createStatement(sql2);
+    stmt.setInt(1, 24);
+    stmt.execute();
+    con.rollback();
+    con.commit();
+    var results = stmt2.executeQuery();
+    results.next(1);
+    expect(results.getNum(1), equals(34));
+  });
   test('test insert nulls', (){
     var sql = 'UPDATE test_table set test_int=:b1, test_string=:b2, test_date=:b3, test_blob=null, test_clob=null';
     var sql2 = 'SELECT * FROM test_table';
