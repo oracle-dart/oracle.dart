@@ -184,6 +184,30 @@ oracle::occi::Date NewOracleDateFromDateTime(Dart_Handle dateTime) {
     return date;
 }
 
+Dart_Handle NewByteDataFromOracleBytes(oracle::occi::Bytes bytes) {
+    if (bytes.isNull()) {
+        return Dart_Null();
+    }
+
+    Dart_Handle byteData = HandleError(Dart_NewTypedData(Dart_TypedData_kByteData,
+                                                         bytes.length()));
+
+    for (int i = 0; i < bytes.length(); i++) {
+        Dart_Handle b = HandleError(Dart_NewInteger(bytes.byteAt(i)));
+
+        HandleError(Dart_Invoke(byteData,
+                                Dart_NewStringFromCString("setUint8"),
+                                1,
+                                &b));
+    }
+
+    return byteData;
+}
+
+oracle::occi::Bytes NewOracleBytesFromByteData(Dart_Handle byteData) {
+
+}
+
 
 void printDartToString(Dart_Handle dh) {
     char *tostr;
