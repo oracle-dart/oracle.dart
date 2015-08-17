@@ -65,6 +65,26 @@ main() {
     expect(dbblob.length(), equals(10));
     var rlist = dbblob.read(10,1);
     expect(rlist, equals("teststring"));
+  }); 
+  test('test clob trim', (){
+    var stmt = con.createStatement("SELECT test_clob FROM test_table FOR UPDATE");
+    var results = stmt.executeQuery();
+    results.next(1);
+    oracle.Clob cl = results.getClob(1);
+    cl.write(10,"teststring",1);
+    con.commit();
+    results = stmt.executeQuery();
+    results.next(1);
+    cl = results.getClob(1);
+    cl.trim(4);
+    con.commit();
+    stmt = con.createStatement("SELECT test_clob FROM test_table");
+    results = stmt.executeQuery();
+    results.next(1);
+    var dbblob = results.getClob(1);
+    expect(dbblob.length(), equals(4));
+    var rlist = dbblob.read(4,1);
+    expect(rlist, equals("test"));
   });
 
   test('test Blob(Connection)', () {
