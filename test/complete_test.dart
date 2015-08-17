@@ -35,6 +35,16 @@ main() {
     stmt.execute();
     con.commit();
   });
+  test('change password', (){
+    con.changePassword(password, 'dig');
+    var newcon = env.createConnection(username, 'dig', connString);
+    var stmt = newcon.createStatement("SELECT * FROM test_table");
+    var results = stmt.executeQuery();
+    results.next(1);
+    expect(results.getNum(1), equals(34));
+
+    newcon.changePassword('dig', password);
+  });
   test('get connection properties', (){
       expect(con.getConnectionString(), equals(connString));
       expect(con.getUsername(), equals(username));

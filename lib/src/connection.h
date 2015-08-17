@@ -37,3 +37,4 @@ void OracleConnection_createStatement(Dart_NativeArguments arguments);
 void OracleConnection_rollback(Dart_NativeArguments arguments);
 void OracleConnection_getUsername(Dart_NativeArguments arguments);
 void OracleConnection_getConnectionString(Dart_NativeArguments arguments);
+void OracleConnection_changePassword(Dart_NativeArguments arguments);

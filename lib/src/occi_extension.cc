@@ -44,6 +44,7 @@ FunctionLookup function_list[] = {
     {"OracleConnection_rollback", OracleConnection_rollback},
     {"OracleConnection_getUsername", OracleConnection_getUsername},
     {"OracleConnection_getConnectionString", OracleConnection_getConnectionString},
+    {"OracleConnection_changePassword", OracleConnection_changePassword},
     {"OracleStatement_getSql", OracleStatement_getSql},
     {"OracleStatement_setSql", OracleStatement_setSql},
     {"OracleStatement_setPrefetchRowCount", OracleStatement_setPrefetchRowCount},

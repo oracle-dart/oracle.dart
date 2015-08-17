@@ -72,12 +72,28 @@ void OracleConnection_getUsername(Dart_NativeArguments args){
 
     Dart_ExitScope();
 }
+
 void OracleConnection_getConnectionString(Dart_NativeArguments args){
     Dart_EnterScope();
 
     std::string s = getThis<std::shared_ptr<Connection>>(args)->get()->connstr;
     Dart_Handle dh = HandleError(Dart_NewStringFromCString(s.c_str()));
     Dart_SetReturnValue(args, dh);
+
+    Dart_ExitScope();
+}
+
+void OracleConnection_changePassword(Dart_NativeArguments args){
+    Dart_EnterScope();
+
+    auto conn = getThis<std::shared_ptr<Connection>>(args)->get()->conn;
+    std::string username  = getThis<std::shared_ptr<Connection>>(args)->get()->username;
+    auto oldpass = getDartArg<std::string>(args, 1);
+    auto newpass = getDartArg<std::string>(args, 2);
+
+    try {
+        conn->changePassword(username, oldpass, newpass);
+    } CATCH_SQL_EXCEPTION
 
     Dart_ExitScope();
 }
