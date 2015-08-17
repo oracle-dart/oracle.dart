@@ -20,10 +20,10 @@ main() {
     var stmt = con.createStatement("BEGIN EXECUTE IMMEDIATE 'DROP TABLE test_table'; EXCEPTION WHEN OTHERS THEN NULL; END;");
     stmt.execute();
     con.commit();
-    stmt = con.createStatement("CREATE TABLE test_table ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_clob CLOB)");
+    stmt = con.createStatement("CREATE TABLE test_table ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_clob CLOB, test_clob2 CLOB)");
     stmt.execute();
     con.commit();
-    stmt = con.createStatement("INSERT INTO test_table (test_int,test_string,test_date,test_blob, test_clob) VALUES (:b1, :b2, :b3, EMPTY_BLOB(), EMPTY_CLOB())");
+    stmt = con.createStatement("INSERT INTO test_table (test_int,test_string,test_date,test_blob, test_clob,test_clob2) VALUES (:b1, :b2, :b3, EMPTY_BLOB(), EMPTY_CLOB(), EMPTY_CLOB())");
     stmt.setInt(1,34);
     stmt.setString(2,"hello world");
     stmt.setDate(3,new DateTime(2012, 12, 19, 34, 35, 36));
@@ -107,6 +107,29 @@ main() {
     expect(dbblob.length(), equals(10));
     var rlist = dbblob.read(10,1);
     expect(rlist, equals("teststring"));
+  });
+  
+  test('test clob copy', (){
+    var stmt = con.createStatement("SELECT test_clob FROM test_table FOR UPDATE");
+    var results = stmt.executeQuery();
+    results.next(1);
+    oracle.Clob cl = results.getClob(1);
+    cl.write(10,"teststring",1);
+    con.commit();
+    stmt = con.createStatement("SELECT test_clob, test_clob2 FROM test_table FOR UPDATE");
+    results = stmt.executeQuery();
+    results.next(1);
+    cl = results.getClob(1);
+    oracle.Clob cl2 = results.getClob(2);
+    cl2.copy(cl, 4);
+    con.commit();
+    stmt = con.createStatement("SELECT test_clob2 FROM test_table");
+    results = stmt.executeQuery();
+    results.next(1);
+    var dbblob = results.getClob(1);
+    expect(dbblob.length(), equals(4));
+    var rlist = dbblob.read(4,1);
+    expect(rlist, equals("test"));
   }); 
   test('test clob trim', (){
     var stmt = con.createStatement("SELECT test_clob FROM test_table FOR UPDATE");

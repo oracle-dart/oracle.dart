@@ -224,7 +224,7 @@ class Blob {
   }
   void append(Blob b) native 'OracleBlob_append';
 
-  void copy(Blob b) native 'OracleBlob_copy';
+  void copy(Blob b, int length) native 'OracleBlob_copy';
 
   int length() native 'OracleBlob_length';
 
@@ -252,7 +252,7 @@ class Clob {
   }
   void append(Clob b) native 'OracleClob_append';
 
-  void copy(Clob b) native 'OracleClob_copy';
+  void copy(Clob b, int length) native 'OracleClob_copy';
 
   int length() native 'OracleClob_length';
 
