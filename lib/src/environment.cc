@@ -46,8 +46,7 @@ void OracleEnvironment_createConnection(Dart_NativeArguments args) {
     std::string connStrg = getDartArg<std::string>(args, 3);
 
     try {
-        auto conn = new std::shared_ptr<Connection>(
-                                                    new Connection(*env, username, password, connStrg));
+        auto conn = new std::shared_ptr<Connection>(new Connection(*env, username, password, connStrg));
 
         Dart_Handle dh = NewInstanceWithPeer("Connection", (void *)conn);
         Dart_NewWeakPersistentHandle(dh, conn, sizeof(conn), OracleConnection_finalizer);

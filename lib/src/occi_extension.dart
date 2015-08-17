@@ -59,6 +59,9 @@ class Connection {
     }
   }
 
+  String getUsername() native 'OracleConnection_getUsername';
+  String getConnectionString() native 'OracleConnection_getConnectionString';
+
   void execute(String sql, [List<Object> args]) {
     var stmt = createStatement(sql);
     _bindArgs(stmt, args);

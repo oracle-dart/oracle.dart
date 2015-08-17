@@ -42,6 +42,8 @@ FunctionLookup function_list[] = {
     {"OracleConnection_commit", OracleConnection_commit},
     {"OracleConnection_createStatement", OracleConnection_createStatement},
     {"OracleConnection_rollback", OracleConnection_rollback},
+    {"OracleConnection_getUsername", OracleConnection_getUsername},
+    {"OracleConnection_getConnectionString", OracleConnection_getConnectionString},
     {"OracleStatement_getSql", OracleStatement_getSql},
     {"OracleStatement_setSql", OracleStatement_setSql},
     {"OracleStatement_setPrefetchRowCount", OracleStatement_setPrefetchRowCount},

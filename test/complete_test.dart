@@ -35,6 +35,10 @@ main() {
     stmt.execute();
     con.commit();
   });
+  test('get connection properties', (){
+      expect(con.getConnectionString(), equals(connString));
+      expect(con.getUsername(), equals(username));
+  });
   test('test blob', () {
     List<int> bloblist = [2, 4, 6, 8, 10];
     var stmt = con.createStatement("SELECT test_blob FROM test_table FOR UPDATE");

@@ -11,11 +11,13 @@
 struct Connection {
     std::shared_ptr<Environment> env;
     occi::Connection *conn;
+    std::string username;
+    std::string connstr;
 
     Connection(std::shared_ptr<Environment> env,
                std::string username,
                std::string password,
-               std::string connStr) : env(env) {
+               std::string connStr) : env(env), username{username}, connstr{connStr} {
         conn = env.get()->env->createConnection(username, password, connStr);
     }
 
@@ -33,3 +35,5 @@ void OracleConnection_init(Dart_NativeArguments arguments);
 void OracleConnection_commit(Dart_NativeArguments arguments);
 void OracleConnection_createStatement(Dart_NativeArguments arguments);
 void OracleConnection_rollback(Dart_NativeArguments arguments);
+void OracleConnection_getUsername(Dart_NativeArguments arguments);
+void OracleConnection_getConnectionString(Dart_NativeArguments arguments);

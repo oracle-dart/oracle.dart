@@ -10,6 +10,7 @@
 
 namespace occi = oracle::occi;
 
+
 void OracleConnection_finalizer(void* isolate_callback_data,
                                 Dart_WeakPersistentHandle handle,
                                 void* peer) {
@@ -57,6 +58,26 @@ void OracleConnection_rollback(Dart_NativeArguments args) {
         conn->rollback();
     } CATCH_SQL_EXCEPTION
 
+
+    Dart_ExitScope();
+}
+
+
+void OracleConnection_getUsername(Dart_NativeArguments args){
+    Dart_EnterScope();
+
+    std::string s = getThis<std::shared_ptr<Connection>>(args)->get()->username;
+    Dart_Handle dh = HandleError(Dart_NewStringFromCString(s.c_str()));
+    Dart_SetReturnValue(args, dh);
+
+    Dart_ExitScope();
+}
+void OracleConnection_getConnectionString(Dart_NativeArguments args){
+    Dart_EnterScope();
+
+    std::string s = getThis<std::shared_ptr<Connection>>(args)->get()->connstr;
+    Dart_Handle dh = HandleError(Dart_NewStringFromCString(s.c_str()));
+    Dart_SetReturnValue(args, dh);
 
     Dart_ExitScope();
 }
