@@ -5,7 +5,29 @@
 
 #include <dart_api.h>
 
+#include "statement.h"
 
+#include <stdio.h>
+
+namespace occi = oracle::occi;
+
+struct ResultSet {
+    std::shared_ptr<Statement> stmt;
+    occi::ResultSet *resultSet;
+
+    ResultSet(std::shared_ptr<Statement> stmt,
+              occi::ResultSet *resultSet) : stmt(stmt), resultSet(resultSet) {
+    }
+
+    ~ResultSet() {
+        //printf("In ~ResultSet\n");
+        stmt.get()->stmt->closeResultSet(resultSet);
+    }
+};
+
+void OracleResultSet_finalizer(void * isolate_callback_data,
+                               Dart_WeakPersistentHandle handle,
+                               void* peer);
 void OracleResultSet_getColumnListMetadata(Dart_NativeArguments arguments);
 void OracleResultSet_cancel(Dart_NativeArguments arguments);
 void OracleResultSet_getBFile(Dart_NativeArguments arguments);

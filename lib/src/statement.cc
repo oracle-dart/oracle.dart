@@ -2,7 +2,9 @@
 // This file is part of oracle.dart, and is released under LGPL v3.
 
 #include "statement.h"
+
 #include "helpers.h"
+#include "resultset.h"
 
 void OracleStatement_finalizer(void* isolate_callback_data,
                                Dart_WeakPersistentHandle handle,
@@ -71,12 +73,20 @@ void OracleStatement_status(Dart_NativeArguments args){
 void OracleStatement_executeQuery(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
+    auto stmt_sp_p = getThis<std::shared_ptr<Statement>>(args);
+    auto statement = stmt_sp_p->get()->stmt;
 
     try {
-        occi::ResultSet* rs = statement->executeQuery();
+        occi::ResultSet* oraResultSet = statement->executeQuery();
 
+        auto rs = new ResultSet(*stmt_sp_p, oraResultSet);
         auto dh = NewInstanceWithPeer("ResultSet", rs);
+
+        Dart_NewWeakPersistentHandle(dh,
+                                     rs,
+                                     sizeof(rs),
+                                     OracleResultSet_finalizer);
+
         Dart_SetReturnValue(args, dh);
     } CATCH_SQL_EXCEPTION
 
