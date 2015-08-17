@@ -21,10 +21,6 @@ class Connection {
   String _connectionString;
   String _username;
 
-  String get connectionString => _connectionString;
-
-  String get username => _username;
-
   factory Connection(String username, String password, String connString) {
     var env = new Environment();
     return env.createConnection(username, password, connString);
