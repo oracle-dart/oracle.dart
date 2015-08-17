@@ -36,15 +36,20 @@ main() {
     con.commit();
   });
   test('change password', (){
-    con.changePassword(password, 'dig');
-    var newcon = env.createConnection(username, 'dig', connString);
-    var stmt = newcon.createStatement("SELECT * FROM test_table");
-    var results = stmt.executeQuery();
-    results.next(1);
-    expect(results.getNum(1), equals(34));
+    con.execute('CREATE USER foo IDENTIFIED BY "bar"');
+    con.execute('GRANT CREATE SESSION to foo');
+    var con2 = env.createConnection('foo', 'bar', connString);
 
-    newcon.changePassword('dig', password);
-  }, skip: 'it works, trust me');
+    expect(() => con2.changePassword('bar', 'bar2'), returnsNormally);
+    con2.terminate();
+
+    expect(() => con2 = env.createConnection('foo', 'bar2', connString),
+           returnsNormally);
+
+    con2.terminate();
+    con.execute('DROP USER foo');
+  });
+
   test('get connection properties', (){
       expect(con.getConnectionString(), equals(connString));
       expect(con.getUsername(), equals(username));
