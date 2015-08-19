@@ -15,6 +15,8 @@ class Environment {
 
   Connection createConnection(String username, String password,
       String connStr) native 'OracleEnvironment_createConnection';
+
+  void terminateConnection(Connection conn) => conn.terminate();
 }
 
 class Connection {
@@ -58,6 +60,7 @@ class Connection {
   String getUsername() native 'OracleConnection_getUsername';
   String getConnectionString() native 'OracleConnection_getConnectionString';
   String changePassword(String oldpass, String newpass) native 'OracleConnection_changePassword';
+  void terminate() native 'OracleConnection_terminate';
 
   void execute(String sql, [List<Object> args]) {
     var stmt = createStatement(sql);

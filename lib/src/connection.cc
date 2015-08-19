@@ -97,3 +97,14 @@ void OracleConnection_changePassword(Dart_NativeArguments args){
 
     Dart_ExitScope();
 }
+
+void OracleConnection_terminate(Dart_NativeArguments args) {
+    Dart_EnterScope();
+
+    auto conn = getThis<std::shared_ptr<Connection>>(args)->get();
+    try {
+        conn->terminate();
+    } CATCH_SQL_EXCEPTION
+
+    Dart_ExitScope();
+}

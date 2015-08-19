@@ -35,6 +35,24 @@ main() {
     stmt.execute();
     con.commit();
   });
+  test('change password', (){
+    con.execute('CREATE USER foo IDENTIFIED BY "bar"');
+    con.execute('GRANT CREATE SESSION to foo');
+    var con2 = env.createConnection('foo', 'bar', connString);
+
+    expect(() => con2.changePassword('bar', 'bar2'), returnsNormally);
+    con2.terminate();
+
+    expect(() => con2 = env.createConnection('foo', 'bar2', connString),
+           returnsNormally);
+
+    con2.terminate();
+    con.execute('DROP USER foo');
+  });
+  test('get connection properties', (){
+      expect(con.getConnectionString(), equals(connString));
+      expect(con.getUsername(), equals(username));
+  });
   test('test blob', () {
     List<int> bloblist = [2, 4, 6, 8, 10];
     var stmt = con.createStatement("SELECT test_blob FROM test_table FOR UPDATE");
