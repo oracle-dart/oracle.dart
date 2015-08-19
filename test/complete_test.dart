@@ -35,20 +35,6 @@ main() {
     stmt.execute();
     con.commit();
   });
-  test('change password', (){
-    con.changePassword(password, 'dig');
-    var newcon = env.createConnection(username, 'dig', connString);
-    var stmt = newcon.createStatement("SELECT * FROM test_table");
-    var results = stmt.executeQuery();
-    results.next(1);
-    expect(results.getNum(1), equals(34));
-
-    newcon.changePassword('dig', password);
-  }, skip: 'it works, trust me');
-  test('get connection properties', (){
-      expect(con.getConnectionString(), equals(connString));
-      expect(con.getUsername(), equals(username));
-  });
   test('test blob', () {
     List<int> bloblist = [2, 4, 6, 8, 10];
     var stmt = con.createStatement("SELECT test_blob FROM test_table FOR UPDATE");
@@ -229,19 +215,6 @@ main() {
     results.next(1);
     expect(results.getNum(1), equals(1));
   });
-  test('test rollback', () {
-    var sql = 'UPDATE test_table set test_int=:bind';
-    var sql2 = 'SELECT * FROM test_table';
-    var stmt = con.createStatement(sql);
-    var stmt2 = con.createStatement(sql2);
-    stmt.setInt(1, 24);
-    stmt.execute();
-    con.rollback();
-    con.commit();
-    var results = stmt2.executeQuery();
-    results.next(1);
-    expect(results.getNum(1), equals(34));
-  });
   test('test insert nulls', (){
     var sql = 'UPDATE test_table set test_int=:b1, test_string=:b2, test_date=:b3, test_blob=null, test_clob=null';
     var sql2 = 'SELECT * FROM test_table';
@@ -259,6 +232,22 @@ main() {
     expect(results.getDate(3), equals(null));
     expect(results.getBlob(4), equals(null));
     expect(results.getClob(5), equals(null));
+  });
+  test('test insert dynamic', (){
+    var sql = 'UPDATE test_table set test_int=:b1, test_string=:b2, test_date=:b3';
+    var sql2 = 'SELECT * FROM test_table';
+    var stmt = con.createStatement(sql);
+    var stmt2 = con.createStatement(sql2);
+    stmt.setDynamic(1, 10);
+    stmt.setDynamic(2, "hello");
+    stmt.setDate(3, new DateTime(2000, 11, 11, 31, 31, 31));
+    stmt.execute();
+    con.commit();
+    var results = stmt2.executeQuery();
+    results.next(1);
+    expect(results.getNum(1), equals(10));
+    expect(results.getString(2), equals("hello"));
+    expect(results.getDate(3).toString(), equals(new DateTime(2000, 11, 11, 31, 31, 31).toString()));
   });
   test('test get', (){
         var stmt = con.createStatement("SELECT * FROM test_table");

@@ -135,6 +135,22 @@ class Statement {
   // the timezone of the [timestamp] is used.
   void setTimestamp(
       int index, DateTime timestamp) native 'OracleStatement_setTimestamp';
+
+  void setDynamic(int index, dynamic input){
+    if(input is int){
+        setInt(index, input);
+    } else if(input is double){
+        setDouble(index, input);
+    }  else if(input is num){
+        setNum(index, input);
+    }  else if(input is String){
+        setString(index, input);
+    }  else if(input is DateTime){
+        setTimestamp(index, input);
+    }else{
+        throw("unsupported type");
+    }  
+  }
 }
 
 class ResultSet {
