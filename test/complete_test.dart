@@ -272,6 +272,20 @@ main() {
     expect(results.getString(2), equals("hello"));
     expect(results.getDate(3), equals(new DateTime(2000, 11, 11, 31, 31, 31)));
   });
+  test('test bind', (){
+    var sql = 'UPDATE test_table set test_int=:b1, test_string=:b2';
+    var sql2 = 'SELECT test_int, test_string FROM test_table';
+    var stmt = con.createStatement(sql);
+    var stmt2 = con.createStatement(sql2);
+    stmt.bind(":b1", 10);
+    stmt.bind(":b2", "hello");
+    stmt.execute();
+    con.commit();
+    var results = stmt2.executeQuery();
+    results.next(1);
+    expect(results.getNum(1), equals(10));
+    expect(results.getString(2), equals("hello"));
+  });
   test('test get', (){
         var stmt = con.createStatement("SELECT * FROM test_table");
         var results = stmt.executeQuery();

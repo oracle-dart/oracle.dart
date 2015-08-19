@@ -152,7 +152,43 @@ class Statement {
       setTimestamp(index, input);
     }else{
       throw("unsupported type");
-    }  
+    }
+  }
+
+  bool _inString(String input, int index){
+    bool instring = false;
+    String watching = "";
+    for(int x = 0; x < index; x++){
+        if(input[x] == '\\'){
+            x++;
+        }else if(instring){
+            if(input[x] == watching)
+                instring = false;
+        } else if(input[x] == '"' || input[x] == "'"){
+            instring = true;
+            watching = input[x];
+        }
+    }
+    return instring;
+  }
+
+  void bind(dynamic bind, dynamic input){
+    if(bind is int || bind is num)
+      setDynamic(bind, input);
+    else if(bind is String){
+      sql = this.sql;
+      RegExp exp = new RegExp(r"[:][A-Za-z0-9_]+");
+      Iterable<Match> matches = exp.allMatches(sql);
+      int i = 0;
+      for(Match m in matches){
+        i++;
+        if(m.group(0) == bind && !_inString(m.input, m.start)){
+          setDynamic(i, input);
+        }
+      }
+    }
+    else
+        throw("bind name is of unsupported type");
   }
 }
 
