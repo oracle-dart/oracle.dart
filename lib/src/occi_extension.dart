@@ -141,17 +141,17 @@ class Statement {
 
   void setDynamic(int index, dynamic input){
     if(input is int){
-        setInt(index, input);
+      setInt(index, input);
     } else if(input is double){
-        setDouble(index, input);
+      setDouble(index, input);
     }  else if(input is num){
-        setNum(index, input);
+      setNum(index, input);
     }  else if(input is String){
-        setString(index, input);
+      setString(index, input);
     }  else if(input is DateTime){
-        setTimestamp(index, input);
+      setTimestamp(index, input);
     }else{
-        throw("unsupported type");
+      throw("unsupported type");
     }  
   }
 }

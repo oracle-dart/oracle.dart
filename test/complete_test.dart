@@ -36,6 +36,7 @@ main() {
     con.commit();
   });
   test('change password', (){
+    try{
     con.execute('CREATE USER foo IDENTIFIED BY "bar"');
     con.execute('GRANT CREATE SESSION to foo');
     var con2 = env.createConnection('foo', 'bar', connString);
@@ -47,7 +48,11 @@ main() {
            returnsNormally);
 
     con2.terminate();
-    con.execute('DROP USER foo');
+    } catch(e){
+      expect("", equals("FAILURE IN CHANGEPASSWORD TEST"));
+    } finally{
+      con.execute('DROP USER foo');
+    }
   });
   test('get connection properties', (){
       expect(con.getConnectionString(), equals(connString));
@@ -265,7 +270,7 @@ main() {
     results.next(1);
     expect(results.getNum(1), equals(10));
     expect(results.getString(2), equals("hello"));
-    expect(results.getDate(3).toString(), equals(new DateTime(2000, 11, 11, 31, 31, 31).toString()));
+    expect(results.getDate(3), equals(new DateTime(2000, 11, 11, 31, 31, 31)));
   });
   test('test get', (){
         var stmt = con.createStatement("SELECT * FROM test_table");
