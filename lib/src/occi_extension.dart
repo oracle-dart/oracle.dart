@@ -176,9 +176,8 @@ class Statement {
     if(bind is int || bind is num)
       setDynamic(bind, input);
     else if(bind is String){
-      sql = this.sql;
       RegExp exp = new RegExp(r"[:][A-Za-z0-9_]+");
-      Iterable<Match> matches = exp.allMatches(sql);
+      Iterable<Match> matches = exp.allMatches(this.sql);
       int i = 0;
       for(Match m in matches){
         i++;
