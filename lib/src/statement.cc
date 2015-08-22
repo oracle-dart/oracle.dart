@@ -37,7 +37,7 @@ void OracleStatement_setSql(Dart_NativeArguments args) {
 void OracleStatement_setPrefetchRowCount(Dart_NativeArguments args){
     Dart_EnterScope();
 
-    auto statement = getThis<occi::Statement>(args);
+    auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
     int64_t val = getDartArg<int64_t>(args, 1);
     statement->setPrefetchRowCount(val);
 

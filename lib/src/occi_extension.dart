@@ -108,8 +108,7 @@ class Statement {
 
   void set sql(String newSql) native 'OracleStatement_setSql';
 
-  void setPrefetchRowCount(
-      int val) native 'OracleStatement_setPrefetchRowCount';
+  void setPrefetchRowCount(int val) native 'OracleStatement_setPrefetchRowCount';
 
   int _execute() native 'OracleStatement_execute';
 

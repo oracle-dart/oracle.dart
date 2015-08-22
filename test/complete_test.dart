@@ -351,6 +351,7 @@ main() {
   });
   test('test get', (){
         var stmt = con.createStatement("SELECT * FROM test_table");
+        stmt.setPrefetchRowCount(12);
         var results = stmt.executeQuery();
         results.next(1);
         expect(results.get(1), equals(34));
