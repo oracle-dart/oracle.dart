@@ -8,10 +8,6 @@
 
 namespace occi = oracle::occi;
 
-void OracleBlob_create(Dart_NativeArguments args){
-    lob_create<occi::Blob>(args);
-}
-
 void OracleBlob_append(Dart_NativeArguments args){
     lob_append<occi::Blob>(args);
 }

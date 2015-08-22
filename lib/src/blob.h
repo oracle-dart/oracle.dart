@@ -6,7 +6,6 @@
 #include <dart_api.h>
 
 
-void OracleBlob_create(Dart_NativeArguments args);
 void OracleBlob_append(Dart_NativeArguments args);
 void OracleBlob_write(Dart_NativeArguments args);
 void OracleBlob_read(Dart_NativeArguments args);

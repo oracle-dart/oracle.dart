@@ -209,10 +209,6 @@ main() {
     expect(rlist, equals("teststringteststring"));
   });
 
-  test('test Blob(Connection)', () {
-    new oracle.Blob(con);
-  }, skip: 'Causes a segfault');
-
   test('test select', () {
         var stmt = con.createStatement("SELECT * FROM test_table");
         var results = stmt.executeQuery();

@@ -6,7 +6,6 @@
 #include <dart_api.h>
 
 
-void OracleClob_create(Dart_NativeArguments args);
 void OracleClob_append(Dart_NativeArguments args);
 void OracleClob_write(Dart_NativeArguments args);
 void OracleClob_read(Dart_NativeArguments args);

@@ -285,12 +285,7 @@ class BFile {
 }
 
 class Blob {
-  Blob(Connection c) {
-    assert(c != null);
-    _init(c);
-  }
   Blob._();
-  void _init(c) native 'OracleBlob_create';
 
   Blob.fromBytes(List<int> bytes) {
     // _initSetBytes(bytes);
@@ -313,12 +308,7 @@ class Blob {
 }
 
 class Clob {
-  Clob(Connection c) {
-    assert(c != null);
-    _init(c);
-  }
   Clob._();
-  void _init(c) native 'OracleClob_create';
 
   Clob.fromBytes(List<int> bytes) {
     // _initSetBytes(bytes);

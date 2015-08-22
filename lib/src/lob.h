@@ -15,25 +15,6 @@ void lob_finalizer(void* isolate_callback_data,
     delete (T *)peer;
 }
 
-#include <iostream>
-template <typename T>
-void lob_create(Dart_NativeArguments args){
-    Dart_EnterScope();
-
-    auto connection = getAddressPair<void, occi::Connection>(args, 1)->second;
-
-    try {
-        T* lob = new T(connection);
-        lob->setEmpty();
-
-        Dart_Handle blobhandle = Dart_This(args);
-        HandleError(Dart_SetPeer(blobhandle, new std::pair<occi::Connection*, T*>(connection, lob)));
-        Dart_NewWeakPersistentHandle(blobhandle, lob, sizeof(lob), lob_finalizer<T>);
-    } CATCH_SQL_EXCEPTION
-
-    Dart_ExitScope();
-}
-
 template <typename T>
 void lob_append(Dart_NativeArguments args){
     Dart_EnterScope();
