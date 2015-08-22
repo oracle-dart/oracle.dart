@@ -132,34 +132,6 @@ void OracleStatement_getResultSet(Dart_NativeArguments args) {
     Dart_ExitScope();
 }
 
-void OracleStatement_setBlob(Dart_NativeArguments args) {
-    Dart_EnterScope();
-
-    auto statement = getThis<occi::Statement>(args);
-    int64_t index = getDartArg<int64_t>(args, 1);
-    auto blob = getPeer<occi::Blob>(args, 2);
-
-    try {
-        statement->setBlob(index, *blob);
-    } CATCH_SQL_EXCEPTION
-
-    Dart_ExitScope();
-}
-
-void OracleStatement_setClob(Dart_NativeArguments args) {
-    Dart_EnterScope();
-
-    auto statement = getThis<occi::Statement>(args);
-    int64_t index = getDartArg<int64_t>(args, 1);
-    auto blob = getPeer<occi::Clob>(args, 2);
-
-    try {
-        statement->setClob(index, *blob);
-    } CATCH_SQL_EXCEPTION
-
-    Dart_ExitScope();
-}
-
 void OracleStatement_setBytes(Dart_NativeArguments args) {
 
 }

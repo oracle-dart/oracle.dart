@@ -125,10 +125,6 @@ class Statement {
 
   StatementStatus status() => StatementStatus.values[_status()];
 
-  void setBlob(int index, Blob blob) native 'OracleStatement_setBlob';
-
-  void setClob(int index, Clob clob) native 'OracleStatement_setClob';
-
   void setBytes(int index, List<int> bytes) native 'OracleStatement_setBytes';
 
   void setString(int index, String string) native 'OracleStatement_setString';
