@@ -14,13 +14,13 @@ namespace occi = oracle::occi;
 void OracleResultSet_finalizer(void * isolate_callback_data,
                                Dart_WeakPersistentHandle handle,
                                void* peer) {
-    delete (ResultSet *)peer;
+    delete (std::shared_ptr<ResultSet> *)peer;
 }
 
 void OracleResultSet_getColumnListMetadata(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     std::vector<occi::MetaData> data;
 
     try {
@@ -50,7 +50,7 @@ void OracleResultSet_getColumnListMetadata(Dart_NativeArguments args) {
 void OracleResultSet_cancel(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
 
     try {
         rs->cancel();
@@ -66,7 +66,7 @@ void OracleResultSet_getBFile(Dart_NativeArguments args) {
 void OracleResultSet_getBlob(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
@@ -89,7 +89,7 @@ void OracleResultSet_getBlob(Dart_NativeArguments args) {
 void OracleResultSet_getClob(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
@@ -116,7 +116,7 @@ void OracleResultSet_getBytes(Dart_NativeArguments args) {
 void OracleResultSet_getString(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
@@ -137,7 +137,7 @@ void OracleResultSet_getString(Dart_NativeArguments args) {
 void OracleResultSet_getInt(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
@@ -155,7 +155,7 @@ void OracleResultSet_getInt(Dart_NativeArguments args) {
 void OracleResultSet_getDouble(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
@@ -176,7 +176,7 @@ void OracleResultSet_getNum(Dart_NativeArguments args) {
 void OracleResultSet_getDate(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     occi::Date date;
@@ -196,7 +196,7 @@ void OracleResultSet_getDate(Dart_NativeArguments args) {
 void OracleResultSet_getTimestamp(Dart_NativeArguments args) {
     Dart_EnterScope();
     
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {
@@ -215,7 +215,7 @@ void OracleResultSet_getRowID(Dart_NativeArguments args) {
 void OracleResultSet_next(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<ResultSet>(args)->resultSet;
+    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
     try {

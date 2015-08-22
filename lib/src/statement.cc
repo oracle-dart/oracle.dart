@@ -80,11 +80,12 @@ void OracleStatement_executeQuery(Dart_NativeArguments args) {
         occi::ResultSet* oraResultSet = statement->executeQuery();
 
         auto rs = new ResultSet(*stmt_sp_p, oraResultSet);
-        auto dh = NewInstanceWithPeer("ResultSet", rs);
+        auto rs_sp = new std::shared_ptr<ResultSet>(rs);
+        auto dh = NewInstanceWithPeer("ResultSet", rs_sp);
 
         Dart_NewWeakPersistentHandle(dh,
-                                     rs,
-                                     sizeof(rs),
+                                     rs_sp,
+                                     sizeof(rs_sp),
                                      OracleResultSet_finalizer);
 
         Dart_SetReturnValue(args, dh);
@@ -116,14 +117,15 @@ void OracleStatement_getResultSet(Dart_NativeArguments args) {
     auto statement = stmt_sp_p->get()->stmt;
 
     try {
-        occi::ResultSet* oraResultSet = statement->getResultSet();
+        occi::ResultSet* oraResultSet = statement->executeQuery();
 
         auto rs = new ResultSet(*stmt_sp_p, oraResultSet);
-        auto dh = NewInstanceWithPeer("ResultSet", rs);
+        auto rs_sp = new std::shared_ptr<ResultSet>(rs);
+        auto dh = NewInstanceWithPeer("ResultSet", rs_sp);
 
         Dart_NewWeakPersistentHandle(dh,
-                                     rs,
-                                     sizeof(rs),
+                                     rs_sp,
+                                     sizeof(rs_sp),
                                      OracleResultSet_finalizer);
 
         Dart_SetReturnValue(args, dh);
