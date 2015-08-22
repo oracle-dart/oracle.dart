@@ -287,9 +287,6 @@ class BFile {
 class Blob {
   Blob._();
 
-  Blob.fromBytes(List<int> bytes) {
-    // _initSetBytes(bytes);
-  }
   void append(Blob b) native 'OracleBlob_append';
 
   void copy(Blob b, int length) native 'OracleBlob_copy';
@@ -310,9 +307,6 @@ class Blob {
 class Clob {
   Clob._();
 
-  Clob.fromBytes(List<int> bytes) {
-    // _initSetBytes(bytes);
-  }
   void append(Clob b) native 'OracleClob_append';
 
   void copy(Clob b, int length) native 'OracleClob_copy';
