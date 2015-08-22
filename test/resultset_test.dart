@@ -10,7 +10,7 @@ class InsertHelper {
   oracle.ResultSet _rs;
 
   InsertHelper(this._conn);
-  
+
   _insertAndFetch(String columnName, Object val) {
     _conn.execute("INSERT INTO resultset_test ($columnName) VALUES ('$val')");
 
@@ -38,7 +38,7 @@ class InsertHelper {
       default:
         throw Exception('Unknown column type $columnType');
     }
-  
+
     return this;
   }
 
@@ -79,7 +79,8 @@ main() {
       con = env.createConnection(username, password, connString);
     }
 
-    var stmt = con.createStatement("BEGIN EXECUTE IMMEDIATE 'DROP TABLE resultset_test'; EXCEPTION WHEN OTHERS THEN NULL; END;");
+    var stmt = con.createStatement(
+        "BEGIN EXECUTE IMMEDIATE 'DROP TABLE resultset_test'; EXCEPTION WHEN OTHERS THEN NULL; END;");
     stmt.execute();
     con.commit();
     stmt = con.createStatement("""CREATE TABLE resultset_test
@@ -94,12 +95,12 @@ main() {
                                  test_tstz TIMESTAMP WITH TIME ZONE)""");
     stmt.execute();
     con.commit();
-   
-    // ensure timezone is always UTC 
+
+    // ensure timezone is always UTC
     con.execute("ALTER SESSION SET time_zone = 'UTC'");
-  }); 
-  
-  tearDown((){
+  });
+
+  tearDown(() {
     var stmt = con.createStatement("DROP TABLE resultset_test");
     stmt.execute();
     con.commit();
@@ -108,24 +109,24 @@ main() {
   group('ResultSet', () {
     group('.getString', () {
       test('with VARCHAR', () {
-        expect(insertIntoColType('VARCHAR', 'foobar').getString(), 'foobar');  
+        expect(insertIntoColType('VARCHAR', 'foobar').getString(), 'foobar');
       });
-      
+
       test('with CLOB', () {
         // OCCI returns an empty string when getString is called on a CLOB
         expect(insertIntoColType('CLOB', 'foobar').getString(), '');
       });
 
       test('with NUMBER', () {
-        expect(insertIntoColType('NUMBER', 5).getString(), '5');  
+        expect(insertIntoColType('NUMBER', 5).getString(), '5');
       });
-      
+
       test('with FLOAT', () {
         expect(insertIntoColType('FLOAT', 5.1).getString(), '5.1');
       });
-      
+
       test('with INT', () {
-        expect(insertIntoColType('INT', 5).getString(), '5');  
+        expect(insertIntoColType('INT', 5).getString(), '5');
       });
 
       test('with NULL', () {
@@ -158,7 +159,8 @@ main() {
       });
 
       test('with NUMBER', () {
-        expect(insertIntoColType('NUMBER', 5.1).getDouble(), closeTo(5.1, MAX_DELTA));
+        expect(insertIntoColType('NUMBER', 5.1).getDouble(),
+            closeTo(5.1, MAX_DELTA));
       });
 
       test('with VARCHAR', () {
@@ -172,76 +174,82 @@ main() {
       });
     });
 
-
     group('.getTimestamp', () {
       test('with TIMESTAMP (UTC)', () {
         con.execute("ALTER SESSION SET time_zone = 'UTC'");
         con.execute("INSERT INTO resultset_test (test_ts) "
-                    "VALUES (to_timestamp('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+            "VALUES (to_timestamp('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'))");
         var rs = con.executeQuery('SELECT test_ts from resultset_test');
         rs.next(1);
 
-        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
+        expect(
+            rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
       });
 
       test('with TIMESTAMP (EST/GMT-5)', () {
         con.execute("ALTER SESSION SET time_zone = 'EST'");
         con.execute("INSERT INTO resultset_test (test_ts) "
-                    "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+            "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
         var rs = con.executeQuery('SELECT test_ts from resultset_test');
         rs.next(1);
 
         // expected time should be 5 hours ahead
-        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
+        expect(rs.getTimestamp(1),
+            equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
       });
 
       test('with TIMESTAMP (PRC/UTC+8)', () {
         con.execute("ALTER SESSION SET time_zone = 'PRC'");
         con.execute("INSERT INTO resultset_test (test_ts) "
-                    "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
+            "VALUES (to_timestamp('1988-11-07 05:02:03', 'YYYY-MM-DD HH:MI:SS'))");
         var rs = con.executeQuery('SELECT test_ts from resultset_test');
         rs.next(1);
 
         // expected time should be 8 hours behind
-        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
+        expect(rs.getTimestamp(1),
+            equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
       });
-      
+
       test('with TIMESTAMP WITH TIME ZONE (UTC)', () {
         con.execute("INSERT INTO resultset_test (test_tstz) "
-                    "VALUES (to_timestamp_tz('1988-11-07 01:02:03 +0:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
+            "VALUES (to_timestamp_tz('1988-11-07 01:02:03 +0:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
         var rs = con.executeQuery('SELECT test_tstz from resultset_test');
         rs.next(1);
 
-        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
+        expect(
+            rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 1, 2, 3)));
       });
 
       test('with TIMESTAMP WITH TIME ZONE (EST/GMT-5)', () {
         con.execute("INSERT INTO resultset_test (test_tstz) "
-                    "VALUES (to_timestamp_tz('1988-11-07 05:02:03 -5:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
+            "VALUES (to_timestamp_tz('1988-11-07 05:02:03 -5:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
         var rs = con.executeQuery('SELECT test_tstz from resultset_test');
         rs.next(1);
 
         // expected time should be 5 hours ahead
-        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
+        expect(rs.getTimestamp(1),
+            equals(new DateTime.utc(1988, 11, 7, 10, 2, 3)));
       });
 
       test('with TIMESTAMP WITH TIME ZONE (PRC/UTC+8)', () {
         con.execute("INSERT INTO resultset_test (test_tstz) "
-                    "VALUES (to_timestamp_tz('1988-11-07 05:02:03 +8:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
+            "VALUES (to_timestamp_tz('1988-11-07 05:02:03 +8:00', 'YYYY-MM-DD HH:MI:SS TZH:TZM'))");
         var rs = con.executeQuery('SELECT test_tstz from resultset_test');
         rs.next(1);
 
         // expected time should be 8 hours behind
-        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
+        expect(rs.getTimestamp(1),
+            equals(new DateTime.utc(1988, 11, 6, 21, 2, 3)));
       });
 
       test('with subseconds', () {
         con.execute("INSERT INTO resultset_test (test_ts) "
-                    "VALUES (to_timestamp('1988-11-07 05:02:03.123', 'YYYY-MM-DD HH:MI:SS.FF'))");
+            "VALUES (to_timestamp('1988-11-07 05:02:03.123', 'YYYY-MM-DD HH:MI:SS.FF'))");
         var rs = con.executeQuery('SELECT test_ts from resultset_test');
         rs.next(1);
 
-        expect(rs.getTimestamp(1), equals(new DateTime.utc(1988, 11, 7, 5, 2, 3, 123)));
+        expect(rs.getTimestamp(1),
+            equals(new DateTime.utc(1988, 11, 7, 5, 2, 3, 123)));
       });
 
       test('with NULL', () {
@@ -272,7 +280,9 @@ main() {
     });
 
     test('getColumnListMetadata', () {
-      var f = () => con.executeQuery('SELECT test_int, test_string FROM resultset_test').getColumnListMetadata();
+      var f = () => con
+          .executeQuery('SELECT test_int, test_string FROM resultset_test')
+          .getColumnListMetadata();
       expect(f, returnsNormally);
 
       var metadataList = f();

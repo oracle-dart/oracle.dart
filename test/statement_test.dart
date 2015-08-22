@@ -20,7 +20,7 @@ main() {
                  EXCEPTION WHEN OTHERS THEN NULL;
                  END;""");
 
-                 conn.execute("""CREATE TABLE stmt_test
+    conn.execute("""CREATE TABLE stmt_test
                               (test_int int,
                                test_string varchar(255),
                                test_date DATE,
@@ -29,12 +29,12 @@ main() {
                                test_ts TIMESTAMP,
                                test_tstz TIMESTAMP WITH TIME ZONE)""");
 
-                 conn.execute("ALTER SESSION SET time_zone = 'UTC'");
+    conn.execute("ALTER SESSION SET time_zone = 'UTC'");
 
-                 return conn;
+    return conn;
   });
 
-  tearDown((){
+  tearDown(() {
     conn.execute("DROP TABLE stmt_test");
   });
 
@@ -64,30 +64,33 @@ main() {
     });
 
     test('.executeUpdate', () {
-      var stmt = conn.createStatement('INSERT INTO stmt_test (test_int) VALUES (NULL)');
+      var stmt = conn
+          .createStatement('INSERT INTO stmt_test (test_int) VALUES (NULL)');
       expect(stmt.executeUpdate(), 1);
     });
 
     group('setTimestamp', () {
       test('with UTC', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
+        var stmt =
+            conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
         var dt = new DateTime.utc(1988, 11, 7, 1, 2, 3, 5);
         stmt.setTimestamp(1, dt);
         stmt.execute();
 
-        var rs = conn.executeQuery("SELECT TO_CHAR(test_ts, 'YYYY-MM-DD HH:MI:SS.FF TZR') FROM stmt_test")
+        var rs = conn.executeQuery(
+            "SELECT TO_CHAR(test_ts, 'YYYY-MM-DD HH:MI:SS.FF TZR') FROM stmt_test")
           ..next(1);
 
         expect(rs.getString(1), '1988-11-07 01:02:03.005000 +00:00');
       });
 
       test('with null', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
+        var stmt =
+            conn.createStatement('INSERT INTO stmt_test (test_ts) VALUES (:1)');
         stmt.setTimestamp(1, null);
         expect(() => stmt.execute(), returnsNormally);
 
-        var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')
-          ..next(1);
+        var rs = conn.executeQuery('SELECT test_ts FROM stmt_test')..next(1);
 
         expect(rs.getTimestamp(1), null);
       });
@@ -95,32 +98,34 @@ main() {
 
     group('setDate', () {
       test('with DateTime', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
+        var stmt = conn
+            .createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
         var dt = new DateTime.utc(1988, 11, 7, 1, 2, 3, 5);
         stmt.setDate(1, dt);
         stmt.execute();
 
-        var rs = conn.executeQuery("SELECT TO_CHAR(test_date, 'YYYY-MM-DD HH:MI:SS') FROM stmt_test")
+        var rs = conn.executeQuery(
+            "SELECT TO_CHAR(test_date, 'YYYY-MM-DD HH:MI:SS') FROM stmt_test")
           ..next(1);
 
         expect(rs.getString(1), '1988-11-07 01:02:03');
       });
-      
+
       test('with null', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
+        var stmt = conn
+            .createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
         stmt.setDate(1, null);
         stmt.execute();
 
-        var rs = conn.executeQuery("SELECT test_date FROM stmt_test")
-          ..next(1);
+        var rs = conn.executeQuery("SELECT test_date FROM stmt_test")..next(1);
 
         expect(rs.getDate(1), null);
       });
     });
   });
 
-
   test('Connection(username, password, connString)', () {
-    expect(() => new oracle.Connection(username, password, connString), returnsNormally);
+    expect(() => new oracle.Connection(username, password, connString),
+        returnsNormally);
   });
 }

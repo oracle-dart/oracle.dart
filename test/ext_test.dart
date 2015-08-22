@@ -22,5 +22,4 @@ main() {
 
     expect(stmt.sql, equals(sql));
   });
-
 }

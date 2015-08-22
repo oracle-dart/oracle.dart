@@ -56,25 +56,23 @@ class Connection {
       }
     }
   }
-  void _bindMap(Statement stmt, [Map args]){
-    if(args == null)
-        return;
-    for(var key in args.keys){
-        stmt.bind(key, args[key]);
+  void _bindMap(Statement stmt, [Map args]) {
+    if (args == null) return;
+    for (var key in args.keys) {
+      stmt.bind(key, args[key]);
     }
   }
 
   String getUsername() native 'OracleConnection_getUsername';
   String getConnectionString() native 'OracleConnection_getConnectionString';
-  String changePassword(String oldpass, String newpass) native 'OracleConnection_changePassword';
+  String changePassword(
+      String oldpass, String newpass) native 'OracleConnection_changePassword';
   void terminate() native 'OracleConnection_terminate';
 
   Statement execute(String sql, [dynamic args]) {
     var stmt = createStatement(sql);
-    if(args is List)
-        _bindArgs(stmt, args);
-    else if(args is Map)
-        _bindMap(stmt, args);
+    if (args is List) _bindArgs(stmt, args);
+    else if (args is Map) _bindMap(stmt, args);
     stmt.execute();
     return stmt;
   }
@@ -108,7 +106,8 @@ class Statement {
 
   void set sql(String newSql) native 'OracleStatement_setSql';
 
-  void setPrefetchRowCount(int val) native 'OracleStatement_setPrefetchRowCount';
+  void setPrefetchRowCount(
+      int val) native 'OracleStatement_setPrefetchRowCount';
 
   int _execute() native 'OracleStatement_execute';
 
@@ -147,65 +146,60 @@ class Statement {
   void setTimestamp(
       int index, DateTime timestamp) native 'OracleStatement_setTimestamp';
 
-  void setDynamic(int index, dynamic input){
-    if(input is int){
+  void setDynamic(int index, dynamic input) {
+    if (input is int) {
       setInt(index, input);
-    } else if(input is double){
+    } else if (input is double) {
       setDouble(index, input);
-    }  else if(input is num){
+    } else if (input is num) {
       setNum(index, input);
-    }  else if(input is String){
+    } else if (input is String) {
       setString(index, input);
-    }  else if(input is DateTime){
+    } else if (input is DateTime) {
       setTimestamp(index, input);
-    }else{
-      throw("unsupported type");
+    } else {
+      throw ("unsupported type");
     }
   }
 
-  bool _inString(String input, int index){
+  bool _inString(String input, int index) {
     bool instring = false;
     String watching = "";
-    for(int x = 0; x < index; x++){
-        if(input[x] == "'" && input.length > x + 1 && input[x+1] == "'"){
-            x++;
-        }else if(instring){
-            if(input[x] == watching)
-                instring = false;
-        } else if(input[x] == '"' || input[x] == "'"){
-            instring = true;
-            watching = input[x];
-        }
+    for (int x = 0; x < index; x++) {
+      if (input[x] == "'" && input.length > x + 1 && input[x + 1] == "'") {
+        x++;
+      } else if (instring) {
+        if (input[x] == watching) instring = false;
+      } else if (input[x] == '"' || input[x] == "'") {
+        instring = true;
+        watching = input[x];
+      }
     }
     return instring;
   }
 
-  void bind(dynamic bind, dynamic input){
-    if(bind is int || bind is num)
-      setDynamic(bind, input);
-    else if(bind is String){
+  void bind(dynamic bind, dynamic input) {
+    if (bind is int || bind is num) setDynamic(bind, input);
+    else if (bind is String) {
       RegExp exp = new RegExp(r"[:][A-Za-z0-9_]+");
       Iterable<Match> matches = exp.allMatches(this.sql);
       int i = 0;
-      for(Match m in matches){
-        if(!_inString(m.input, m.start)){
-            i++;
-            if(m.group(0) == bind && !_inString(m.input, m.start)){
-              setDynamic(i, input);
-            }
+      for (Match m in matches) {
+        if (!_inString(m.input, m.start)) {
+          i++;
+          if (m.group(0) == bind && !_inString(m.input, m.start)) {
+            setDynamic(i, input);
+          }
         }
       }
-    }
-    else
-        throw("bind name is of unsupported type");
+    } else throw ("bind name is of unsupported type");
   }
 }
 
 class ResultSet {
   ResultSet._();
 
-  List<ColumnMetadata> getColumnListMetadata()
-    native 'OracleResultSet_getColumnListMetadata';
+  List<ColumnMetadata> getColumnListMetadata() native 'OracleResultSet_getColumnListMetadata';
 
   dynamic cancel() native 'OracleResultSet_cancel';
 
@@ -215,10 +209,10 @@ class ResultSet {
 
   Clob getClob(int index) native 'OracleResultSet_getClob';
 
-  dynamic get(int index){
+  dynamic get(int index) {
     var md = getColumnListMetadata();
-    var x = md[index-1].getDataType();
-    switch(x){
+    var x = md[index - 1].getDataType();
+    switch (x) {
       case DataType.CHR:
         return getString(index);
       case DataType.NUM:
@@ -249,7 +243,6 @@ class ResultSet {
   // **without** performing any timezone offset calculation
   DateTime getDate(int index) native 'OracleResultSet_getDate';
 
-
   // Get a [DateTime] at a given [index]
   //
   // Note: This method will return a [new DateTime.utc]. If timezone information
@@ -258,21 +251,20 @@ class ResultSet {
 
   dynamic getRowID() native 'OracleResultSet_getRowID';
 
-  bool next([int numberOfRows=1]) {
-      _next(numberOfRows);
+  bool next([int numberOfRows = 1]) {
+    _next(numberOfRows);
   }
-      
+
   bool _next(int numberOfRows) native 'OracleResultSet_next';
 
-  Map<String, dynamic> row(){
+  Map<String, dynamic> row() {
     Map<String, dynamic> map = new Map<String, dynamic>();
     List<ColumnMetadata> metadata = getColumnListMetadata();
-    for(var x = 0; x < metadata.length; x++){
-      map[metadata[x].getName()] = get(x+1);
+    for (var x = 0; x < metadata.length; x++) {
+      map[metadata[x].getName()] = get(x + 1);
     }
     return map;
   }
-
 }
 
 class BFile {
@@ -311,20 +303,20 @@ class Clob {
   void trim(int length) native 'OracleClob_trim';
 
   String read(int amount, int offset) {
-      List<int> li = _read_helper(amount, offset);
-      return UTF8.decode(li);
+    List<int> li = _read_helper(amount, offset);
+    return UTF8.decode(li);
   }
-  
+
   List<int> _read_helper(int amount, int offset) native 'OracleClob_read';
 
   int write(int amount, String str, int offset) {
+    List<int> li = UTF8.encode(str);
 
-      List<int> li = UTF8.encode(str);
-
-      return _write_helper(amount, li, offset);
+    return _write_helper(amount, li, offset);
   }
-      
-  int _write_helper(int amount, List<int> buffer, int offset) native 'OracleClob_write';
+
+  int _write_helper(
+      int amount, List<int> buffer, int offset) native 'OracleClob_write';
 }
 
 class DataType {
@@ -585,7 +577,8 @@ abstract class _Metadata {
   int getObjectId() => getUInt(_MetadataAttrs.ATTR_OBJ_ID);
   String getObjectName() => getString(_MetadataAttrs.ATTR_OBJ_NAME);
   String getObjectSchema() => getString(_MetadataAttrs.ATTR_OBJ_SCHEMA);
-  ParamType getParamType() => ParamType.values[getInt(_MetadataAttrs.ATTR_PTYPE)];
+  ParamType getParamType() =>
+      ParamType.values[getInt(_MetadataAttrs.ATTR_PTYPE)];
   DateTime getObjectTimestamp() => getTimestamp(_MetadataAttrs.ATTR_TIMESTAMP);
 
   bool _getBoolean(int attrId) native 'OracleMetadata_getBoolean';
@@ -608,7 +601,7 @@ class ColumnMetadata extends _Metadata {
   int getCharSize() => getUInt(_MetadataAttrs.ATTR_CHAR_SIZE);
   int getDataSize() => getInt(_MetadataAttrs.ATTR_DATA_SIZE);
   DataType getDataType() =>
-    DataType.forNum(getInt(_MetadataAttrs.ATTR_DATA_TYPE));
+      DataType.forNum(getInt(_MetadataAttrs.ATTR_DATA_TYPE));
   String getName() => getString(_MetadataAttrs.ATTR_NAME);
   int getPrecision() => getInt(_MetadataAttrs.ATTR_PRECISION);
   int getScale() => getInt(_MetadataAttrs.ATTR_SCALE);
