@@ -109,6 +109,29 @@ void OracleStatement_executeUpdate(Dart_NativeArguments args) {
 
 }
 
+void OracleStatement_getResultSet(Dart_NativeArguments args) {
+    Dart_EnterScope();
+
+    auto stmt_sp_p = getThis<std::shared_ptr<Statement>>(args);
+    auto statement = stmt_sp_p->get()->stmt;
+
+    try {
+        occi::ResultSet* oraResultSet = statement->getResultSet();
+
+        auto rs = new ResultSet(*stmt_sp_p, oraResultSet);
+        auto dh = NewInstanceWithPeer("ResultSet", rs);
+
+        Dart_NewWeakPersistentHandle(dh,
+                                     rs,
+                                     sizeof(rs),
+                                     OracleResultSet_finalizer);
+
+        Dart_SetReturnValue(args, dh);
+    } CATCH_SQL_EXCEPTION
+
+    Dart_ExitScope();
+}
+
 void OracleStatement_setBlob(Dart_NativeArguments args) {
     Dart_EnterScope();
 

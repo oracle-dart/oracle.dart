@@ -35,6 +35,7 @@ void OracleStatement_setPrefetchRowCount(Dart_NativeArguments args);
 void OracleStatement_execute(Dart_NativeArguments arguments);
 void OracleStatement_executeQuery(Dart_NativeArguments arguments);
 void OracleStatement_executeUpdate(Dart_NativeArguments arguments);
+void OracleStatement_getResultSet(Dart_NativeArguments arguments);
 void OracleStatement_status(Dart_NativeArguments arguments);
 void OracleStatement_setBlob(Dart_NativeArguments arguments);
 void OracleStatement_setClob(Dart_NativeArguments arguments);

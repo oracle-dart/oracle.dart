@@ -52,6 +52,7 @@ FunctionLookup function_list[] = {
     {"OracleStatement_execute", OracleStatement_execute},
     {"OracleStatement_executeQuery", OracleStatement_executeQuery},
     {"OracleStatement_executeUpdate", OracleStatement_executeUpdate},
+    {"OracleStatement_getResultSet", OracleStatement_getResultSet},
     {"OracleStatement_status", OracleStatement_status},
     {"OracleStatement_setBlob", OracleStatement_setBlob},
     {"OracleStatement_setClob", OracleStatement_setClob},

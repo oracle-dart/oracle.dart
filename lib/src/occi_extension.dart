@@ -69,13 +69,14 @@ class Connection {
   String changePassword(String oldpass, String newpass) native 'OracleConnection_changePassword';
   void terminate() native 'OracleConnection_terminate';
 
-  void execute(String sql, [dynamic args]) {
+  Statement execute(String sql, [dynamic args]) {
     var stmt = createStatement(sql);
     if(args is List)
         _bindArgs(stmt, args);
     else if(args is Map)
         _bindMap(stmt, args);
     stmt.execute();
+    return stmt;
   }
 
   ResultSet executeQuery(String sql, [List<Object> args]) {
@@ -115,6 +116,8 @@ class Statement {
   StatementStatus execute() => StatementStatus.values[_execute()];
 
   ResultSet executeQuery() native 'OracleStatement_executeQuery';
+
+  ResultSet getResultSet() native 'OracleStatement_getResultSet';
 
   int executeUpdate() native 'OracleStatement_executeUpdate';
 

@@ -35,6 +35,13 @@ main() {
     stmt.execute();
     con.commit();
   });
+  test('get connection', (){
+      var con = new oracle.Connection(username, password, connString);
+      var stmt = con.execute('SELECT test_int FROM test_table');
+      var rs = stmt.getResultSet();
+      rs.next(1);
+      expect(rs.get(1), equals(34));
+  });
   test('change password', (){
     try{
     con.execute('CREATE USER foo IDENTIFIED BY "bar"');
