@@ -72,7 +72,7 @@ stmt.setInt(1, 12);
 stmt.execute();
 stmt = conn.createStatement("SELECT test_int from test_table");
 oracle.ResultSet results = stmt.executeQuery();
-results.next(1);
+results.next();
 int i = results.getInt(1);
 print(i) // 12
 // garbage collection will cleanup
