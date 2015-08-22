@@ -58,7 +58,7 @@ oracle.Connection conn = env.createConnection(username, password, connString);
 oracle.Statement stmt = conn.execute('SELECT test_int FROM test_table WHERE test_date=:bind', {':bind' : new DateTime(2012, 12, 19, 34, 35, 36)});
 oracle.ResultSet results = stmt.getResultSet();
 while(results.next())
-  assert(results.row['TEST_INT'] == 12);
+  assert(results.row()['TEST_INT'] == 12);
 ```
 
 ### Low level OCCI wrapping
