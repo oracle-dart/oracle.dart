@@ -347,6 +347,16 @@ main() {
         expect(results.get(2), equals("hello world"));
         expect(results.get(3).toString(), equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
   });
+  test('test execute with map', (){
+    var sql = "UPDATE test_table set test_string=:b2, test_int=:b3";
+    var sql2 = 'SELECT test_int, test_string FROM test_table';
+    var stmt = con.execute(sql, {1:"11", ':b3':10});
+    var stmt2 = con.createStatement(sql2);
+    var results = stmt2.executeQuery();
+    results.next(1);
+    expect(results.getNum(1), equals(10));
+    expect(results.getString(2), equals("11"));
+  });
   test('test row', (){
         var stmt = con.createStatement("SELECT * FROM test_table");
         var results = stmt.executeQuery();

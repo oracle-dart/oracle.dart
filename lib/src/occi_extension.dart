@@ -56,15 +56,25 @@ class Connection {
       }
     }
   }
+  void _bindMap(Statement stmt, [Map args]){
+    if(args == null)
+        return;
+    for(var key in args.keys){
+        stmt.bind(key, args[key]);
+    }
+  }
 
   String getUsername() native 'OracleConnection_getUsername';
   String getConnectionString() native 'OracleConnection_getConnectionString';
   String changePassword(String oldpass, String newpass) native 'OracleConnection_changePassword';
   void terminate() native 'OracleConnection_terminate';
 
-  void execute(String sql, [List<Object> args]) {
+  void execute(String sql, [dynamic args]) {
     var stmt = createStatement(sql);
-    _bindArgs(stmt, args);
+    if(args is List)
+        _bindArgs(stmt, args);
+    else if(args is Map)
+        _bindMap(stmt, args);
     stmt.execute();
   }
 
