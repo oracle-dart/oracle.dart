@@ -263,9 +263,7 @@ class ResultSet {
 
   dynamic getRowID() native 'OracleResultSet_getRowID';
 
-  bool next([int numberOfRows]) {
-      if(numberOfRows == null)
-          numberOfRows = 1;
+  bool next([int numberOfRows=1]) {
       _next(numberOfRows);
   }
       
