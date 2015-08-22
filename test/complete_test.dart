@@ -286,6 +286,19 @@ main() {
     expect(results.getNum(1), equals(10));
     expect(results.getString(2), equals("hello"));
   });
+  test('test tricky bind', (){
+    var sql = "UPDATE test_table set test_string=':b3', test_int=:b3";
+    var sql2 = 'SELECT test_int, test_string FROM test_table';
+    var stmt = con.createStatement(sql);
+    var stmt2 = con.createStatement(sql2);
+    stmt.bind(":b3", 10);
+    stmt.execute();
+    con.commit();
+    var results = stmt2.executeQuery();
+    results.next(1);
+    expect(results.getNum(1), equals(10));
+    expect(results.getString(2), equals(":b3"));
+  });
   test('test get', (){
         var stmt = con.createStatement("SELECT * FROM test_table");
         var results = stmt.executeQuery();

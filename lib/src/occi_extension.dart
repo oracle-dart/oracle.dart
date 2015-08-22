@@ -180,9 +180,11 @@ class Statement {
       Iterable<Match> matches = exp.allMatches(this.sql);
       int i = 0;
       for(Match m in matches){
-        i++;
-        if(m.group(0) == bind && !_inString(m.input, m.start)){
-          setDynamic(i, input);
+        if(!_inString(m.input, m.start)){
+            i++;
+            if(m.group(0) == bind && !_inString(m.input, m.start)){
+              setDynamic(i, input);
+            }
         }
       }
     }
