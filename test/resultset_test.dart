@@ -12,7 +12,7 @@ class InsertHelper {
   InsertHelper(this._conn);
   
   _insertAndFetch(String columnName, Object val) {
-    _conn.execute("INSERT INTO resultset_test ($columnName) VALUES (:0)", [val]);
+    _conn.execute("INSERT INTO resultset_test ($columnName) VALUES ('$val')");
 
     _rs = _conn.executeQuery("SELECT $columnName FROM resultset_test");
     _rs.next(1);
@@ -29,6 +29,12 @@ class InsertHelper {
       case 'VARCHAR':
         _insertAndFetch('test_string', val);
         break;
+      case 'CLOB':
+        _insertAndFetch('test_clob', val);
+        break;
+      case 'FLOAT':
+        _insertAndFetch('test_float', val);
+        break;
       default:
         throw Exception('Unknown column type $columnType');
     }
@@ -39,6 +45,7 @@ class InsertHelper {
   getInt() => _rs.getInt(1);
   getDouble() => _rs.getDouble(1);
   getTimestamp() => _rs.getTimestamp(1);
+  getString() => _rs.getString(1);
 }
 
 main() {
@@ -80,6 +87,8 @@ main() {
                                  test_string varchar(255),
                                  test_date DATE,
                                  test_blob BLOB,
+                                 test_clob CLOB,
+                                 test_float FLOAT,
                                  test_number NUMBER,
                                  test_ts TIMESTAMP,
                                  test_tstz TIMESTAMP WITH TIME ZONE)""");
@@ -97,6 +106,36 @@ main() {
   });
 
   group('ResultSet', () {
+    group('.getString', () {
+      test('with VARCHAR', () {
+        expect(insertIntoColType('VARCHAR', 'foobar').getString(), 'foobar');  
+      });
+      
+      test('with CLOB', () {
+        // OCCI returns an empty string when getString is called on a CLOB
+        expect(insertIntoColType('CLOB', 'foobar').getString(), '');
+      });
+
+      test('with NUMBER', () {
+        expect(insertIntoColType('NUMBER', 5).getString(), '5');  
+      });
+      
+      test('with FLOAT', () {
+        expect(insertIntoColType('FLOAT', 5.1).getString(), '5.1');
+      });
+      
+      test('with INT', () {
+        expect(insertIntoColType('INT', 5).getString(), '5');  
+      });
+
+      test('with NULL', () {
+        insertNulls();
+        var f = () => queryAll().getString(1);
+        expect(f, returnsNormally);
+        expect(f(), isNull);
+      });
+    });
+
     group('.getInt', () {
       test('with INT', () {
         expect(insertIntoColType('INT', 5).getInt(), equals(5));
