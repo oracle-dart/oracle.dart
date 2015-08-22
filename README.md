@@ -80,7 +80,7 @@ print(i) // 12
 
 ## API
 
-Being developed.
+See tests, this is dart after all.
 
 ## Development Instructions
 
