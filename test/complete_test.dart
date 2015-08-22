@@ -273,11 +273,11 @@ main() {
     expect(results.getDate(3), equals(new DateTime(2000, 11, 11, 31, 31, 31)));
   });
   test('test bind', (){
-    var sql = 'UPDATE test_table set test_int=:b1, test_string=:b2';
+    var sql = 'UPDATE test_table set test_string=:b2, test_int=:b3';
     var sql2 = 'SELECT test_int, test_string FROM test_table';
     var stmt = con.createStatement(sql);
     var stmt2 = con.createStatement(sql2);
-    stmt.bind(":b1", 10);
+    stmt.bind(":b3", 10);
     stmt.bind(":b2", "hello");
     stmt.execute();
     con.commit();
