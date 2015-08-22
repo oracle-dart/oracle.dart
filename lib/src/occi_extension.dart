@@ -159,7 +159,7 @@ class Statement {
     bool instring = false;
     String watching = "";
     for(int x = 0; x < index; x++){
-        if(input[x] == '\\'){
+        if(input[x] == "'" && input.length > x + 1 && input[x+1] == "'"){
             x++;
         }else if(instring){
             if(input[x] == watching)
