@@ -263,7 +263,13 @@ class ResultSet {
 
   dynamic getRowID() native 'OracleResultSet_getRowID';
 
-  bool next(int numberOfRows) native 'OracleResultSet_next';
+  bool next([int numberOfRows]) {
+      if(numberOfRows == null)
+          numberOfRows = 1;
+      _next(numberOfRows);
+  }
+      
+  bool _next(int numberOfRows) native 'OracleResultSet_next';
 
   Map<String, dynamic> row(){
     Map<String, dynamic> map = new Map<String, dynamic>();
