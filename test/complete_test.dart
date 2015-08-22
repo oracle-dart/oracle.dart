@@ -36,7 +36,7 @@ main() {
     con.commit();
   });
   test('get connection', (){
-      var con = new oracle.Connection(username, password, connString);
+      var con = env.createConnection(username, password, connString);
       var stmt = con.execute('SELECT test_int FROM test_table');
       var rs = stmt.getResultSet();
       rs.next(1);
