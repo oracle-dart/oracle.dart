@@ -92,7 +92,7 @@ FunctionLookup function_list[] = {
     {"OracleMetadata_getInt", OracleMetadata_getInt},
     {"OracleMetadata_getNumber", OracleMetadata_getNumber},
     {"OracleMetadata_getString", OracleMetadata_getString},
-    {"OracleMetadata_getTimeStamp", OracleMetadata_getTimeStamp},
+    {"OracleMetadata_getTimestamp", OracleMetadata_getTimestamp},
     {"OracleMetadata_getUInt", OracleMetadata_getUInt},
     {NULL, NULL}};
 

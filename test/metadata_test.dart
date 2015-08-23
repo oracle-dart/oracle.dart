@@ -36,19 +36,24 @@ main() {
   });
 
   group('ColumnMetadata', () {
-    test('getParamType', () {
+    test('.getParamType', () {
       expect(metadata[0].getParamType(), oracle.ParamType.COLUMN);
     });
 
-    test('getName', () {
+    test('.getName', () {
       expect(metadata[0].getName(), equals('TEST_INT'));
       expect(metadata[1].getName(), equals('TEST_STRING'));
     });
 
-    test('getPrecision', () {
+    test('.getPrecision', () {
       expect(metadata[0].getPrecision(), equals(38));
       expect(metadata[1].getPrecision(), equals(0));
       expect(metadata[2].getPrecision(), equals(20));
+    });
+
+    // Should throw as columns do not have associated object timestamps
+    test('.getObjectTimestamp should throw', () {
+      expect(() => metadata[0].getObjectTimestamp(), throws);
     });
 
     test('getScale', () {
@@ -57,31 +62,31 @@ main() {
       expect(metadata[2].getScale(), equals(5));
     });
 
-    test('getDataSize', () {
+    test('.getDataSize', () {
       expect(metadata[1].getDataSize(), equals(255));
     });
 
-    test('isCharUsed', () {
+    test('.isCharUsed', () {
       expect(metadata[0].isCharUsed(), isFalse);
       expect(metadata[1].isCharUsed(), isFalse);
     });
 
-    test('getDataType', () {
+    test('.getDataType', () {
       expect(metadata[0].getDataType(), oracle.DataType.NUM);
       expect(metadata[1].getDataType(), oracle.DataType.CHR);
     });
 
-    test('canNull', () {
+    test('.canNull', () {
       expect(metadata[0].canNull(), isTrue);
       expect(metadata[1].canNull(), isTrue);
     });
 
-    test('getTypeName', () {
+    test('.getTypeName', () {
       expect(metadata[0].getTypeName(), '');
       expect(metadata[1].getTypeName(), '');
     });
 
-    test('getSchemaName', () {
+    test('.getSchemaName', () {
       expect(metadata[0].getSchemaName(), '');
       expect(metadata[1].getSchemaName(), '');
     });

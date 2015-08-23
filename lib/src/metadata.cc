@@ -64,9 +64,18 @@ void OracleMetadata_getString(Dart_NativeArguments args) {
     Dart_ExitScope();
 }
 
-void OracleMetadata_getTimeStamp(Dart_NativeArguments args) {
-    Dart_PropagateError(Dart_NewUnhandledExceptionError(
-        Dart_NewStringFromCString("Not implemented")));
+void OracleMetadata_getTimestamp(Dart_NativeArguments args) {
+    Dart_EnterScope();
+
+    auto metadata = getThis<std::shared_ptr<Metadata>>(args)->get()->metadata;
+    auto attrId = (occi::MetaData::AttrId) getDartArg<int64_t>(args, 1);
+
+    try {
+        occi::Timestamp val = metadata->getTimestamp(attrId);
+        Dart_SetReturnValue(args, NewDateTimeFromOracleTimestamp(val));
+    } CATCH_SQL_EXCEPTION
+
+    Dart_ExitScope();
 }
 
 void OracleMetadata_getUInt(Dart_NativeArguments args) {
