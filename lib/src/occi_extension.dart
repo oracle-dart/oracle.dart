@@ -128,7 +128,10 @@ class Statement {
   void setString(int index, String string) native 'OracleStatement_setString';
 
   void setNum(int index, num number){
-    _setNum(index, number.toDouble());
+    if(number == null)
+      _setNum(index, null);
+    else
+      _setNum(index, number.toDouble());
   }
   void _setNum(int index, double number) native 'OracleStatement_setNum';
 
