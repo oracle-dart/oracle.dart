@@ -54,7 +54,7 @@ main() {
     var rs = stmt.getResultSet();
     rs.next(1);
     expect(rs.get(1), equals(34));
-  }, skip: 'causing segfault due to new oracle.connection');
+  });
   test('change password', () {
     try {
       con.execute('CREATE USER foo IDENTIFIED BY "bar"');

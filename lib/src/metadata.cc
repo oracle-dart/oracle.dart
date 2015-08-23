@@ -11,13 +11,15 @@ namespace occi = oracle::occi;
 void OracleMetadata_Finalizer(void * isolate_callback_data,
                               Dart_WeakPersistentHandle handle,
                               void* peer) {
-    delete (occi::MetaData *)peer;
+    //printf("hereyo OracleMetadata_Finalizer\n");
+    delete (std::shared_ptr<Metadata> *)peer;
+    //printf("after OracleMetadata_Finalizer\n");
 }
 
 void OracleMetadata_getBoolean(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto metadata = getThis<occi::MetaData>(args);
+    auto metadata = getThis<std::shared_ptr<Metadata>>(args)->get()->metadata;
     auto attrId = (occi::MetaData::AttrId) getDartArg<int64_t>(args, 1);
 
     try {
@@ -33,7 +35,7 @@ void OracleMetadata_getBoolean(Dart_NativeArguments args) {
 void OracleMetadata_getInt(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto metadata = getThis<occi::MetaData>(args);
+    auto metadata = getThis<std::shared_ptr<Metadata>>(args)->get()->metadata;
     int64_t attrId = getDartArg<int64_t>(args, 1);
 
     try {
@@ -51,7 +53,7 @@ void OracleMetadata_getNumber(Dart_NativeArguments args) {
 void OracleMetadata_getString(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto metadata = getThis<occi::MetaData>(args);
+    auto metadata = getThis<std::shared_ptr<Metadata>>(args)->get()->metadata;
     int64_t attrId = getDartArg<int64_t>(args, 1);
 
     try {
@@ -70,7 +72,7 @@ void OracleMetadata_getTimeStamp(Dart_NativeArguments args) {
 void OracleMetadata_getUInt(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto metadata = getThis<occi::MetaData>(args);
+    auto metadata = getThis<std::shared_ptr<Metadata>>(args)->get()->metadata;
     int64_t attrId = getDartArg<int64_t>(args, 1);
 
     try {

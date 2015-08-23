@@ -20,26 +20,28 @@ void OracleResultSet_finalizer(void * isolate_callback_data,
 void OracleResultSet_getColumnListMetadata(Dart_NativeArguments args) {
     Dart_EnterScope();
 
-    auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
+    auto rs_sp = getThis<std::shared_ptr<ResultSet>>(args);
     std::vector<occi::MetaData> data;
 
     try {
-        data = rs->getColumnListMetaData();
+        data = rs_sp->get()->resultSet->getColumnListMetaData();
     } CATCH_SQL_EXCEPTION
         
     Dart_Handle list = Dart_NewList(data.size());
 
     for (unsigned int i = 0; i < data.size(); i++) {
-        occi::MetaData *md = new occi::MetaData(data[i]);
-        Dart_Handle mdata = NewInstanceWithPeer("ColumnMetadata", (void *)md);
+        auto *ora_md = new occi::MetaData(data[i]);
+        auto md = new Metadata(*rs_sp, ora_md);
+        auto md_sp = new std::shared_ptr<Metadata>(md);
 
-        Dart_SetPeer(mdata, (void *)md);
-        Dart_NewWeakPersistentHandle(mdata,
-                                     (void *)md,
-                                     sizeof(md),
+        Dart_Handle dart_md = NewInstanceWithPeer("ColumnMetadata", md_sp);
+
+        Dart_NewWeakPersistentHandle(dart_md,
+                                     (void *)md_sp,
+                                     sizeof(md_sp),
                                      OracleMetadata_Finalizer);
 
-        Dart_ListSetAt(list, i, mdata);
+        Dart_ListSetAt(list, i, dart_md);
     }
 
     Dart_SetReturnValue(args, list);
