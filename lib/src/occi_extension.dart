@@ -154,8 +154,6 @@ class Statement {
       setInt(index, input);
     } else if (input is double) {
       setDouble(index, input);
-    } else if (input is num) {
-      setNum(index, input);
     } else if (input is String) {
       setString(index, input);
     } else if (input is DateTime) {

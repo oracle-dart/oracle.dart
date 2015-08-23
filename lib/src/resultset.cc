@@ -181,17 +181,11 @@ void OracleResultSet_getDate(Dart_NativeArguments args) {
     auto rs = getThis<std::shared_ptr<ResultSet>>(args)->get()->resultSet;
     int64_t index = getDartArg<int64_t>(args, 1);
 
-    occi::Date date;
     try {
-        if(rs->isNull(index)){
-            Dart_SetReturnValue(args, Dart_Null());
-            Dart_ExitScope();
-            return;
-        }
-        date = rs->getDate(index);
+        occi::Date date = rs->getDate(index);
+        Dart_SetReturnValue(args, NewDateTimeFromOracleDate(date));
     } CATCH_SQL_EXCEPTION
 
-    Dart_SetReturnValue(args, NewDateTimeFromOracleDate(date));
     Dart_ExitScope();
 }
 
