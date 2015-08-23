@@ -74,6 +74,25 @@ main() {
     con.execute("INSERT into resultset_test (test_int) VALUES (NULL)");
   }
 
+  insertValidRow() {
+    con.execute("""INSERT INTO resultset_test
+                (test_int,
+                 test_string,
+                 test_date,
+                 test_blob,
+                 test_clob,
+                 test_float,
+                 test_number)
+
+                VALUES(5,
+                       'test',
+                       to_date('1988-11-07 01:02:03', 'YYYY-MM-DD HH:MI:SS'),
+                       '42010203',
+                       'test',
+                       '5.5',
+                       '10.10')""");
+  }
+
   setUp(() {
     if (con == null) {
       username = Platform.environment['DB_USERNAME'];
@@ -140,6 +159,7 @@ main() {
         expect(f, returnsNormally);
         expect(f(), isNull);
       });
+    
     });
 
     group('.getInt', () {
@@ -155,6 +175,13 @@ main() {
         insertNulls();
         expect(() => queryAll().getInt(1), returnsNormally);
         expect(queryAll().getInt(1), isNull);
+      });
+      
+      test('with unconvertable type', () {
+        insertValidRow();
+        var rs = con.executeQuery('SELECT test_date from resultset_test');
+        rs.next();
+        expect(() => rs.getInt(1), throws);
       });
     });
 
@@ -176,6 +203,13 @@ main() {
         insertNulls();
         expect(() => queryAll().getDouble(1), returnsNormally);
         expect(queryAll().getDouble(1), isNull);
+      });
+      
+      test('with unconvertable type', () {
+        insertValidRow();
+        var rs = con.executeQuery('SELECT test_date from resultset_test');
+        rs.next();
+        expect(() => rs.getDouble(1), throws);
       });
     });
 
@@ -263,6 +297,13 @@ main() {
         expect(f, returnsNormally);
         expect(f(), isNull);
       });
+      
+      test('with unconvertable type', () {
+        insertValidRow();
+        var rs = con.executeQuery('SELECT test_int from resultset_test');
+        rs.next();
+        expect(() => rs.getTimestamp(1), throws);
+      });
     });
 
     group('.getDate', () {
@@ -282,6 +323,13 @@ main() {
         expect(f, returnsNormally);
         expect(f(), isNull);
       });
+      
+      test('with unconvertable type', () {
+        insertValidRow();
+        var rs = con.executeQuery('SELECT test_int from resultset_test');
+        rs.next();
+        expect(() => rs.getDate(1), throws);
+      });
     });
 
   group('.getBlob', () {
@@ -292,6 +340,15 @@ main() {
       expect(blob.length(), 3);
       expect(blob.read(3, 1), [1, 2, 3]);
     });
+
+    test('with unconvertable type', () {
+      insertValidRow();
+      var rs = con.executeQuery('SELECT test_int from resultset_test');
+      rs.next();
+
+      expect(() => rs.getBlob(1), throws);
+    });
+
     test('with NULL', () {
       insertNulls();
       var f = () => queryAll().getBlob(1);
@@ -307,6 +364,14 @@ main() {
 
       expect(clob.length(), equals(expected.length));
       expect(clob.read(expected.length, 1), expected);
+    });
+    
+    test('with unconvertable type', () {
+      insertValidRow();
+      var rs = con.executeQuery('SELECT test_int from resultset_test');
+      rs.next();
+
+      expect(() => rs.getClob(1), throws);
     });
 
     test('with NULL', () {
