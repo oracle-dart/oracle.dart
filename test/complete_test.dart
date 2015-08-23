@@ -230,8 +230,8 @@ main() {
     results.next(1);
     expect(results.getNum(1), equals(34));
     expect(results.getString(2), equals("hello world"));
-    expect(results.getDate(3).toString(),
-        equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
+    expect(results.getDate(3).toString(),equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
+    expect(results.getNum(7), equals(12000000000000000000000000000000000009));
   });
   test('test status', () {
     var stmt = con.createStatement("SELECT test_int from test_table");
@@ -266,13 +266,14 @@ main() {
   });
   test('test insert nulls', () {
     var sql =
-        'UPDATE test_table set test_int=:b1, test_string=:b2, test_date=:b3, test_blob=null, test_clob=null';
+        'UPDATE test_table set test_int=:b1, test_string=:b2, test_date=:b3, test_blob=null, test_clob=null,test_num=:b4';
     var sql2 = 'SELECT * FROM test_table';
     var stmt = con.createStatement(sql);
     var stmt2 = con.createStatement(sql2);
     stmt.setInt(1, null);
     stmt.setString(2, null);
     stmt.setDate(3, null);
+    stmt.setNum(4, null);
     stmt.execute();
     con.commit();
     var results = stmt2.executeQuery();
@@ -282,6 +283,7 @@ main() {
     expect(results.getDate(3), equals(null));
     expect(results.getBlob(4), equals(null));
     expect(results.getClob(5), equals(null));
+    expect(results.getNum(7), equals(null));
   });
   test('test insert dynamic', () {
     var sql =
