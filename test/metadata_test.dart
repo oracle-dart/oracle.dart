@@ -19,9 +19,12 @@ main() {
     con.execute(
         "BEGIN EXECUTE IMMEDIATE 'DROP TABLE metadata_test'; EXCEPTION WHEN OTHERS THEN NULL; END;");
     con.execute(
-        "CREATE TABLE metadata_test ( test_int int, test_string varchar(255) , test_number NUMBER(20, 5))");
+        """CREATE TABLE metadata_test (
+        test_int int,
+        test_string varchar(255),
+        test_number NUMBER(20, 5) NOT NULL)""");
 
-    con.execute("INSERT into metadata_test (test_int) VALUES (NULL)");
+    con.execute("INSERT into metadata_test (test_number) VALUES (1)");
     var rs = con.executeQuery(
         'SELECT test_int, test_string, test_number from metadata_test');
     metadata = rs.getColumnListMetadata();
@@ -79,6 +82,7 @@ main() {
     test('.canNull', () {
       expect(metadata[0].canNull(), isTrue);
       expect(metadata[1].canNull(), isTrue);
+      expect(metadata[2].canNull(), isFalse);
     });
 
     test('.getTypeName', () {
