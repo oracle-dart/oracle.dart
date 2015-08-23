@@ -208,14 +208,6 @@ oracle::occi::Bytes NewOracleBytesFromByteData(Dart_Handle byteData) {
 
 }
 
-
-void printDartToString(Dart_Handle dh) {
-    char *tostr;
-    Dart_StringToCString(Dart_ToString(dh), (const char **)&tostr);
-
-    printf("%s\n", tostr);
-}
-
 Dart_Handle HandleError(Dart_Handle handle) {
     if (Dart_IsError(handle)) Dart_PropagateError(handle);
     return handle;
