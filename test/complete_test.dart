@@ -22,14 +22,15 @@ main() {
     stmt.execute();
     con.commit();
     stmt = con.createStatement(
-        "CREATE TABLE test_table ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_clob CLOB, test_clob2 CLOB)");
+        "CREATE TABLE test_table ( test_int int, test_string varchar(255), test_date DATE, test_blob BLOB, test_clob CLOB, test_clob2 CLOB, test_num NUMBER)");
     stmt.execute();
     con.commit();
     stmt = con.createStatement(
-        "INSERT INTO test_table (test_int,test_string,test_date,test_blob, test_clob,test_clob2) VALUES (:b1, :b2, :b3, EMPTY_BLOB(), EMPTY_CLOB(), EMPTY_CLOB())");
+        "INSERT INTO test_table (test_int,test_string,test_date,test_blob, test_clob,test_clob2,test_num) VALUES (:b1, :b2, :b3, EMPTY_BLOB(), EMPTY_CLOB(), EMPTY_CLOB(),:b4)");
     stmt.setInt(1, 34);
     stmt.setString(2, "hello world");
     stmt.setDate(3, new DateTime(2012, 12, 19, 34, 35, 36));
+    stmt.setNum(4, 12000000000000000000000000000000000009);
     stmt.execute();
     con.commit();
   });
@@ -400,6 +401,7 @@ main() {
     results.next(1);
     var row = results.row();
     expect(row['TEST_INT'], equals(34));
+    expect(row['TEST_NUM'], equals(12000000000000000000000000000000000009));
     expect(row['TEST_STRING'], equals("hello world"));
     expect(row['TEST_DATE'].toString(),
         equals(new DateTime(2012, 12, 19, 34, 35, 36).toString()));
