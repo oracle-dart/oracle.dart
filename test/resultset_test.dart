@@ -32,6 +32,9 @@ class InsertHelper {
       case 'CLOB':
         _insertAndFetch('test_clob', val);
         break;
+      case 'BLOB':
+        _insertAndFetch('test_blob', val);
+        break;
       case 'FLOAT':
         _insertAndFetch('test_float', val);
         break;
@@ -46,6 +49,8 @@ class InsertHelper {
   getDouble() => _rs.getDouble(1);
   getTimestamp() => _rs.getTimestamp(1);
   getString() => _rs.getString(1);
+  getBlob() => _rs.getBlob(1);
+  getClob() => _rs.getClob(1);
 }
 
 main() {
@@ -279,6 +284,39 @@ main() {
       });
     });
 
+  group('.getBlob', () {
+    test('with BLOB', () {
+      // insert as hex string
+      var blob = insertIntoColType('BLOB', "010203").getBlob();
+
+      expect(blob.length(), 3);
+      expect(blob.read(3, 1), [1, 2, 3]);
+    });
+    test('with NULL', () {
+      insertNulls();
+      var f = () => queryAll().getBlob(1);
+      expect(f, returnsNormally);
+      expect(f(), isNull);
+    }); 
+  });
+  
+  group('.getClob', () {
+    test('with CLOB', () {
+      var expected = "string";
+      var clob = insertIntoColType('CLOB', expected).getClob();
+
+      expect(clob.length(), equals(expected.length));
+      expect(clob.read(expected.length, 1), expected);
+    });
+
+    test('with NULL', () {
+      insertNulls();
+      var f = () => queryAll().getClob(1);
+      expect(f, returnsNormally);
+      expect(f(), isNull);
+    }); 
+  });
+
     test('getColumnListMetadata', () {
       var f = () => con
           .executeQuery('SELECT test_int, test_string FROM resultset_test')
@@ -291,12 +329,6 @@ main() {
       for (var md in metadataList) {
         expect(md is oracle.ColumnMetadata, isTrue);
       }
-    });
-
-    test('getString with NULL', () {
-      insertNulls();
-      expect(() => queryAll().getString(1), returnsNormally);
-      expect(queryAll().getString(1), isNull);
     });
   });
 }
