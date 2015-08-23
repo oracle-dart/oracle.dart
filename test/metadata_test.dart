@@ -18,8 +18,7 @@ main() {
     con = new oracle.Connection(username, password, connString);
     con.execute(
         "BEGIN EXECUTE IMMEDIATE 'DROP TABLE metadata_test'; EXCEPTION WHEN OTHERS THEN NULL; END;");
-    con.execute(
-        """CREATE TABLE metadata_test (
+    con.execute("""CREATE TABLE metadata_test (
         test_int int,
         test_string varchar(255),
         test_number NUMBER(20, 5) NOT NULL)""");

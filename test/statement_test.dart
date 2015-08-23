@@ -122,48 +122,52 @@ main() {
         expect(rs.getDate(1), null);
       });
     });
-  
+
     group('.setDynamic', () {
       test('with String', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_string) VALUES (:1)');
+        var stmt = conn
+            .createStatement('INSERT INTO stmt_test (test_string) VALUES (:1)');
         expect(() => stmt.setDynamic(1, 'test'), returnsNormally);
       });
 
       test('with int', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_int) VALUES (:1)');
+        var stmt = conn
+            .createStatement('INSERT INTO stmt_test (test_int) VALUES (:1)');
         expect(() => stmt.setDynamic(1, int.parse('5')), returnsNormally);
       });
 
       test('with double', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_number) VALUES (:1)');
+        var stmt = conn
+            .createStatement('INSERT INTO stmt_test (test_number) VALUES (:1)');
         expect(() => stmt.setDynamic(1, double.parse('5.5')), returnsNormally);
       });
 
       test('with DateTime', () {
-        var stmt = conn.createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
+        var stmt = conn
+            .createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
         expect(() => stmt.setDynamic(1, new DateTime.now()), returnsNormally);
       });
     });
 
     group('.execute', () {
       test('with List', () {
-        helper(colName, argsList) =>
-          conn.execute('INSERT INTO stmt_test ($colName) VALUES(:1)', argsList);
+        helper(colName, argsList) => conn.execute(
+            'INSERT INTO stmt_test ($colName) VALUES(:1)', argsList);
 
         expect(() => helper('test_string', ['test']), returnsNormally);
-        
+
         expect(() => helper('test_int', [5]), returnsNormally);
-        
+
         expect(() => helper('test_number', [5.5]), returnsNormally);
-        
-        expect(() => helper('test_date', [new DateTime.now()]), returnsNormally);
+
+        expect(
+            () => helper('test_date', [new DateTime.now()]), returnsNormally);
 
         // should fail if too many args given
         expect(() => helper('test_string', ['test', 5]), throws);
       });
     });
   }); // Statement
-
 
   test('Connection(username, password, connString)', () {
     expect(() => new oracle.Connection(username, password, connString),

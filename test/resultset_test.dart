@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:oracle/oracle.dart' as oracle;
 import 'package:test/test.dart';
 import 'package:collection/equality.dart';
+import 'helpers.dart';
 
 const MAX_DELTA = 0.0001;
 
@@ -109,14 +110,14 @@ main() {
     con.commit();
     stmt = con.createStatement("""CREATE TABLE resultset_test
                                (test_int int,
-                                 test_string varchar(255),
-                                 test_date DATE,
-                                 test_blob BLOB,
-                                 test_clob CLOB,
-                                 test_float FLOAT,
-                                 test_number NUMBER,
-                                 test_ts TIMESTAMP,
-                                 test_tstz TIMESTAMP WITH TIME ZONE)""");
+                                test_string varchar(255),
+                                test_date DATE,
+                                test_blob BLOB,
+                                test_clob CLOB,
+                                test_float FLOAT,
+                                test_number NUMBER,
+                                test_ts TIMESTAMP,
+                                test_tstz TIMESTAMP WITH TIME ZONE)""");
     stmt.execute();
     con.commit();
 
@@ -159,7 +160,6 @@ main() {
         expect(f, returnsNormally);
         expect(f(), isNull);
       });
-    
     });
 
     group('.getInt', () {
@@ -176,12 +176,12 @@ main() {
         expect(() => queryAll().getInt(1), returnsNormally);
         expect(queryAll().getInt(1), isNull);
       });
-      
+
       test('with unconvertable type', () {
         insertValidRow();
         var rs = con.executeQuery('SELECT test_date from resultset_test');
         rs.next();
-        expect(() => rs.getInt(1), throws);
+        expect(() => rs.getInt(1), throwsSqlException(932));
       });
     });
 
@@ -204,7 +204,7 @@ main() {
         expect(() => queryAll().getDouble(1), returnsNormally);
         expect(queryAll().getDouble(1), isNull);
       });
-      
+
       test('with unconvertable type', () {
         insertValidRow();
         var rs = con.executeQuery('SELECT test_date from resultset_test');
@@ -297,7 +297,7 @@ main() {
         expect(f, returnsNormally);
         expect(f(), isNull);
       });
-      
+
       test('with unconvertable type', () {
         insertValidRow();
         var rs = con.executeQuery('SELECT test_int from resultset_test');
@@ -323,7 +323,7 @@ main() {
         expect(f, returnsNormally);
         expect(f(), isNull);
       });
-      
+
       test('with unconvertable type', () {
         insertValidRow();
         var rs = con.executeQuery('SELECT test_int from resultset_test');
@@ -332,55 +332,55 @@ main() {
       });
     });
 
-  group('.getBlob', () {
-    test('with BLOB', () {
-      // insert as hex string
-      var blob = insertIntoColType('BLOB', "010203").getBlob();
+    group('.getBlob', () {
+      test('with BLOB', () {
+        // insert as hex string
+        var blob = insertIntoColType('BLOB', "010203").getBlob();
 
-      expect(blob.length(), 3);
-      expect(blob.read(3, 1), [1, 2, 3]);
+        expect(blob.length(), 3);
+        expect(blob.read(3, 1), [1, 2, 3]);
+      });
+
+      test('with unconvertable type', () {
+        insertValidRow();
+        var rs = con.executeQuery('SELECT test_int from resultset_test');
+        rs.next();
+
+        expect(() => rs.getBlob(1), throws);
+      });
+
+      test('with NULL', () {
+        insertNulls();
+        var f = () => queryAll().getBlob(1);
+        expect(f, returnsNormally);
+        expect(f(), isNull);
+      });
     });
 
-    test('with unconvertable type', () {
-      insertValidRow();
-      var rs = con.executeQuery('SELECT test_int from resultset_test');
-      rs.next();
+    group('.getClob', () {
+      test('with CLOB', () {
+        var expected = "string";
+        var clob = insertIntoColType('CLOB', expected).getClob();
 
-      expect(() => rs.getBlob(1), throws);
+        expect(clob.length(), equals(expected.length));
+        expect(clob.read(expected.length, 1), expected);
+      });
+
+      test('with unconvertable type', () {
+        insertValidRow();
+        var rs = con.executeQuery('SELECT test_int from resultset_test');
+        rs.next();
+
+        expect(() => rs.getClob(1), throws);
+      });
+
+      test('with NULL', () {
+        insertNulls();
+        var f = () => queryAll().getClob(1);
+        expect(f, returnsNormally);
+        expect(f(), isNull);
+      });
     });
-
-    test('with NULL', () {
-      insertNulls();
-      var f = () => queryAll().getBlob(1);
-      expect(f, returnsNormally);
-      expect(f(), isNull);
-    }); 
-  });
-  
-  group('.getClob', () {
-    test('with CLOB', () {
-      var expected = "string";
-      var clob = insertIntoColType('CLOB', expected).getClob();
-
-      expect(clob.length(), equals(expected.length));
-      expect(clob.read(expected.length, 1), expected);
-    });
-    
-    test('with unconvertable type', () {
-      insertValidRow();
-      var rs = con.executeQuery('SELECT test_int from resultset_test');
-      rs.next();
-
-      expect(() => rs.getClob(1), throws);
-    });
-
-    test('with NULL', () {
-      insertNulls();
-      var f = () => queryAll().getClob(1);
-      expect(f, returnsNormally);
-      expect(f(), isNull);
-    }); 
-  });
 
     test('getColumnListMetadata', () {
       var f = () => con
