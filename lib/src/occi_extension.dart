@@ -6,6 +6,20 @@ library oracle.src.occi_extension;
 import 'dart-ext:occi_extension';
 import 'dart:convert';
 
+class SqlException implements Exception {
+  int _code;
+  String _desc;
+
+  int get code => _code;
+  String get desc => _desc;
+
+  @override
+  SqlException(int this._code, String this._desc);
+
+  @override
+  String toString() => "SqlException: $desc";
+}
+
 class Environment {
   Environment() {
     _init();

@@ -184,6 +184,24 @@ oracle::occi::Date NewOracleDateFromDateTime(Dart_Handle dateTime) {
     return date;
 }
 
+Dart_Handle NewDartExceptionFromOracleException(oracle::occi::SQLException e) {
+    Dart_Handle oracleDartLibrary =
+        GetDartLibrary("package:oracle/src/occi_extension.dart");
+
+    Dart_Handle type = HandleError(
+        Dart_GetType(oracleDartLibrary,
+                     HandleError(Dart_NewStringFromCString("SqlException")),
+                     0,
+                     NULL));
+
+    std::vector<Dart_Handle> args = {
+        HandleError(Dart_NewInteger(e.getErrorCode())),
+        HandleError(Dart_NewStringFromCString(e.getMessage().c_str()))
+    };
+    
+    return Dart_New(type, Dart_Null(), 2, &args[0]);
+}
+
 Dart_Handle HandleError(Dart_Handle handle) {
     if (Dart_IsError(handle)) Dart_PropagateError(handle);
     return handle;

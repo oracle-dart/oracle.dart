@@ -13,8 +13,7 @@
 
 #define CATCH_SQL_EXCEPTION \
     catch (oracle::occi::SQLException e) { \
-        Dart_PropagateError(Dart_NewUnhandledExceptionError( \
-            Dart_NewStringFromCString(e.getMessage().c_str()))); \
+        HandleError(Dart_ThrowException(NewDartExceptionFromOracleException(e))); \
     }
 
 Dart_Handle GetDartLibrary(const char*);
@@ -33,6 +32,8 @@ oracle::occi::Date NewOracleDateFromDateTime(Dart_Handle dateTime);
 
 Dart_Handle NewByteDataFromOracleBytes(oracle::occi::Bytes bytes);
 oracle::occi::Bytes NewOracleBytesFromByteData(Dart_Handle byteData);
+
+Dart_Handle NewDartExceptionFromOracleException(oracle::occi::SQLException e);
 
 template<typename T>
 T* getPeer(Dart_NativeArguments args, int index){
