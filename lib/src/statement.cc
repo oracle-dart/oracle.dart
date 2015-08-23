@@ -210,17 +210,11 @@ void OracleStatement_setDate(Dart_NativeArguments args) {
     auto statement = getThis<std::shared_ptr<Statement>>(args)->get()->stmt;
     int64_t index = getDartArg<int64_t>(args, 1);
 
-    if(nullArg(args,2)){
-        try{
-            statement->setNull(index, occi::OCCIDATE);
-        } CATCH_SQL_EXCEPTION
-    }else{
-        auto dartdate = getDartArg<Dart_Handle>(args, 2);
+    auto dartdate = getDartArg<Dart_Handle>(args, 2);
 
-        try {
-            statement->setDate(index, NewOracleDateFromDateTime(dartdate));
-        } CATCH_SQL_EXCEPTION
-    }
+    try {
+        statement->setDate(index, NewOracleDateFromDateTime(dartdate));
+    } CATCH_SQL_EXCEPTION
 
     Dart_ExitScope();
 }
