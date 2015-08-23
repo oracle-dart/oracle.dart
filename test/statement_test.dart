@@ -124,6 +124,28 @@ main() {
     });
   });
 
+  group('setDynamic', () {
+    test('with String', () {
+      var stmt = conn.createStatement('INSERT INTO stmt_test (test_string) VALUES (:1)');
+      expect(() => stmt.setDynamic(1, 'test'), returnsNormally);
+    });
+    
+    test('with int', () {
+      var stmt = conn.createStatement('INSERT INTO stmt_test (test_int) VALUES (:1)');
+      expect(() => stmt.setDynamic(1, int.parse('5')), returnsNormally);
+    });
+    
+    test('with double', () {
+      var stmt = conn.createStatement('INSERT INTO stmt_test (test_number) VALUES (:1)');
+      expect(() => stmt.setDynamic(1, double.parse('5.5')), returnsNormally);
+    });
+    
+    test('with DateTime', () {
+      var stmt = conn.createStatement('INSERT INTO stmt_test (test_date) VALUES (:1)');
+      expect(() => stmt.setDynamic(1, new DateTime.now()), returnsNormally);
+    });
+  });
+
   test('Connection(username, password, connString)', () {
     expect(() => new oracle.Connection(username, password, connString),
         returnsNormally);
