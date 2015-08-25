@@ -8,8 +8,8 @@ authors:
 - Austin Cummings
 homepage: https://github.com/oracle-dart/oracle.dart
 dependencies:
-  grinder: any
+  grinder: ^0.7.2
 dev_dependencies:
-  logging: any
-  test: any
-  dart_coveralls: any
+  logging: ^0.11.1
+  test: ^0.12.4+3
+  dart_coveralls: ^0.4.0
