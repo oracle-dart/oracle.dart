@@ -9,7 +9,7 @@ authors:
 homepage: https://github.com/oracle-dart/oracle.dart
 dependencies:
   grinder: any
-dev-dependencies:
+dev_dependencies:
   logging: any
   test: any
   dart_coveralls: any
