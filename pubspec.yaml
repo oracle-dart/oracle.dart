@@ -1,7 +1,15 @@
 name: oracle
 version: 0.1.0
+description: >
+  Dart library for Oracle database access.
+authors: 
+- Michael Loveridge
+- Chris Lucas 
+- Austin Cummings
+homepage: https://github.com/oracle-dart/oracle.dart
 dependencies:
   grinder: any
+dev-dependencies:
   logging: any
   test: any
   dart_coveralls: any
