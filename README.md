@@ -40,7 +40,6 @@ Support for:
 - Date and Timestamps as Dart `DateTime` type
 - BLOBs
 - CLOBs
-- BFiles (coming soon)
 
 ## License
 Free as in freedom softwares.
