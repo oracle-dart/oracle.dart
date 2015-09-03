@@ -27,8 +27,8 @@ class Environment {
 
   void _init() native 'OracleEnvironment_init';
 
-  Connection createConnection(String username, String password,
-      String connStr) native 'OracleEnvironment_createConnection';
+  Connection createConnection(String username, String password, String connStr)
+      native 'OracleEnvironment_createConnection';
 
   void terminateConnection(Connection conn) => conn.terminate();
 }
@@ -70,6 +70,7 @@ class Connection {
       }
     }
   }
+
   void _bindMap(Statement stmt, [Map args]) {
     if (args == null) return;
     for (var key in args.keys) {
@@ -79,8 +80,8 @@ class Connection {
 
   String getUsername() native 'OracleConnection_getUsername';
   String getConnectionString() native 'OracleConnection_getConnectionString';
-  String changePassword(
-      String oldpass, String newpass) native 'OracleConnection_changePassword';
+  String changePassword(String oldpass, String newpass)
+      native 'OracleConnection_changePassword';
   void terminate() native 'OracleConnection_terminate';
 
   Statement execute(String sql, [dynamic args]) {
@@ -101,9 +102,10 @@ class Connection {
 
   void rollback() native 'OracleConnection_rollback';
 
-  Statement createStatement(
-      String sql) native 'OracleConnection_createStatement';
+  Statement createStatement(String sql)
+      native 'OracleConnection_createStatement';
 }
+
 enum StatementStatus {
   UNPREPARED,
   PREPARED,
@@ -120,8 +122,8 @@ class Statement {
 
   void set sql(String newSql) native 'OracleStatement_setSql';
 
-  void setPrefetchRowCount(
-      int val) native 'OracleStatement_setPrefetchRowCount';
+  void setPrefetchRowCount(int val)
+      native 'OracleStatement_setPrefetchRowCount';
 
   int _execute() native 'OracleStatement_execute';
 
@@ -141,12 +143,11 @@ class Statement {
 
   void setString(int index, String string) native 'OracleStatement_setString';
 
-  void setNum(int index, num number){
-    if(number == null)
-      _setNum(index, null);
-    else
-      _setNum(index, number.toDouble());
+  void setNum(int index, num number) {
+    if (number == null) _setNum(index, null);
+    else _setNum(index, number.toDouble());
   }
+
   void _setNum(int index, double number) native 'OracleStatement_setNum';
 
   void setInt(int index, int integer) native 'OracleStatement_setInt';
@@ -163,8 +164,8 @@ class Statement {
   //
   // Note: Because Oracle's TIMESTAMP type is timezone-aware,
   // the timezone of the [timestamp] is used.
-  void setTimestamp(
-      int index, DateTime timestamp) native 'OracleStatement_setTimestamp';
+  void setTimestamp(int index, DateTime timestamp)
+      native 'OracleStatement_setTimestamp';
 
   void setDynamic(int index, dynamic input) {
     if (input is int) {
@@ -217,7 +218,8 @@ class Statement {
 class ResultSet {
   ResultSet._();
 
-  List<ColumnMetadata> getColumnListMetadata() native 'OracleResultSet_getColumnListMetadata';
+  List<ColumnMetadata> getColumnListMetadata()
+      native 'OracleResultSet_getColumnListMetadata';
 
   dynamic cancel() native 'OracleResultSet_cancel';
 
@@ -333,8 +335,8 @@ class Clob {
     return _write_helper(amount, li, offset);
   }
 
-  int _write_helper(
-      int amount, List<int> buffer, int offset) native 'OracleClob_write';
+  int _write_helper(int amount, List<int> buffer, int offset)
+      native 'OracleClob_write';
 }
 
 class DataType {
