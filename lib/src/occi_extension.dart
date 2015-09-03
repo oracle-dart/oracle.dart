@@ -323,19 +323,19 @@ class Clob {
   void trim(int length) native 'OracleClob_trim';
 
   String read(int amount, int offset) {
-    List<int> li = _read_helper(amount, offset);
+    List<int> li = _readHelper(amount, offset);
     return UTF8.decode(li);
   }
 
-  List<int> _read_helper(int amount, int offset) native 'OracleClob_read';
+  List<int> _readHelper(int amount, int offset) native 'OracleClob_read';
 
   int write(int amount, String str, int offset) {
     List<int> li = UTF8.encode(str);
 
-    return _write_helper(amount, li, offset);
+    return _writeHelper(amount, li, offset);
   }
 
-  int _write_helper(int amount, List<int> buffer, int offset)
+  int _writeHelper(int amount, List<int> buffer, int offset)
       native 'OracleClob_write';
 }
 
