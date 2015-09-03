@@ -2,10 +2,10 @@ name: oracle
 version: 0.1.0
 description: >
   Dart library for Oracle database access.
-authors: 
+authors:
 - Michael Loveridge <loveridge.michael@gmail.com>
 - Chris Lucas <chris@chrisjlucas.com>
-- Austin Cummings <austincummings95@gmail.com>
+- Austin Cummings <austin@austincummings.com>
 homepage: https://github.com/oracle-dart/oracle.dart
 environment:
   sdk: ">=1.8.0 <2.0.0"
