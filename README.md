@@ -77,10 +77,6 @@ print(i) // 12
 // garbage collection will cleanup
 ```
 
-## API
-
-See tests, this is dart after all.
-
 ## Development Instructions
 
 ```bash
